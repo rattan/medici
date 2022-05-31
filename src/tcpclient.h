@@ -1,6 +1,9 @@
 #include "tcpsocket.h"
 
 class TcpClient: public TcpSocket {
+private:
+    SOCKET clientSocket;
 public:
-    TcpClient(const char* ipAddress, u_short port);
+    TcpClient();
+    TcpSocket connect(const char* ipAddress, u_short port);
 };

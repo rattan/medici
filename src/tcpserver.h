@@ -2,9 +2,13 @@
 
 #include <thread>
 
-class TcpServer: public TcpSocket {
+class TcpServer {
     private:
-    void acceptWorker();
+    SOCKET listenSocket;
+    std::function<void(TcpSocket)> acceptListener;
     public:
-    TcpServer(u_short port);
+    TcpServer();
+    void setOnAcceptListener(std::function<void(TcpSocket)> listener);
+    void listen(u_short port);
+    void close();
 };
