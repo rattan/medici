@@ -1,12 +1,6 @@
 #include "tcpclient.h"
 
 TcpClient::TcpClient() {
-    #ifdef _WIN32
-        WSADATA wsa;
-        if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
-            std::cerr << "winsock init error. " << wsa.wVersion << std::endl;
-        }
-    #endif
         clientSocket = socket(AF_INET, SOCK_STREAM, 0);
         if (INVALID_SOCKET == clientSocket) {
             std::cerr << "invalid socket error." << std::endl;

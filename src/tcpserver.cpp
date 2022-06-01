@@ -1,12 +1,6 @@
 #include "tcpserver.h"
 
 TcpServer::TcpServer() {
-#ifdef _WIN32
-    WSADATA wsa;
-    if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
-        std::cerr << "winsock init error. " << wsa.wVersion << std::endl;
-    }
-#endif
     listenSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (INVALID_SOCKET == listenSocket) {
         std::cerr << "invalid socket error." << std::endl;
@@ -34,4 +28,11 @@ void TcpServer::listen(u_short port) {
         int addressLength = sizeof(clientAddres);
         SOCKET clientSocket = accept(listenSocket, (SOCKADDR*)&clientAddres, &addressLength);
     }
+}
+
+void TcpServer::close() {
+    closesocket(this->listenSocket);
+#ifdef _WIN32
+    WSACleanup();
+#endif
 }

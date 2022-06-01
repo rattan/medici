@@ -1,6 +1,6 @@
 #include "tcpsocket.h"
 
-class TcpClient: public TcpSocket {
+class TcpClient {
 private:
     SOCKET clientSocket;
 public:
