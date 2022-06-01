@@ -4,11 +4,10 @@
 
 class TcpServer {
     private:
-    SOCKET listenSocket;
+    SOCKET listenSocket = 0;
     std::function<void(TcpSocket)> acceptListener;
+    std::thread listenThread;
     public:
-    TcpServer();
-    void setOnAcceptListener(std::function<void(TcpSocket)> listener);
-    void listen(u_short port);
+    void listen(u_short port, std::function<void(TcpSocket)> &listener);
     void close();
 };

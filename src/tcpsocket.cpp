@@ -6,19 +6,22 @@ WSInitializer::WSInitializer() {
     if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
         std::cerr << "winsock init error. " << wsa.wVersion << std::endl;
     } else {
-        std::cout<<"winsock init "<<wsa.wVersion<<std::endl;
+        std::cout << "winsock init " << wsa.wVersion << std::endl;
     }
 }
+
 WSInitializer::~WSInitializer() {
     WSACleanup();
 }
-
 #endif
 
-TcpSocket::TcpSocket(SOCKET socket): _socket(socket) {
-}
+TcpSocket::TcpSocket(SOCKET socket): _socket(socket) {}
 
 void TcpSocket::setOnReceiveListener(std::function<void(char*, int)> &listener) {
+    if(_socket == 0) {
+        throw std::exception("Can't receive. TcpSocket not avaliable.");
+    }
+
     bool receiveThreadTrigger = false;
     if(receiveListener.load()) {
         receiveThreadTrigger = true;
@@ -27,9 +30,8 @@ void TcpSocket::setOnReceiveListener(std::function<void(char*, int)> &listener) 
 
     if(receiveThreadTrigger) {
         this->receiveThread = std::thread([&](){
-        this->_buffer = new char[this->bufferSize];
-            while(_socket != 0) {
-                
+            this->_buffer = new char[this->bufferSize];
+            while(_socket) {
                 int receivedSize = recv(this->_socket, this->_buffer, this->bufferSize, 0);
                 if(receivedSize != SOCKET_ERROR) {
                     this->receiveListener.load()(this->_buffer, receivedSize);
@@ -40,14 +42,24 @@ void TcpSocket::setOnReceiveListener(std::function<void(char*, int)> &listener) 
                     }
                 }
             }
-        })
+            std::cout<<"receive end"<<std::endl;
+        });
     }
 }
 
 void TcpSocket::send(const char* buffer, int size) const {
-    sock_send(_socket, buffer, size, 0);
+    if(_socket) {
+        sock_send(_socket, buffer, size, 0);
+    } else {
+        throw std::exception("Can't send. TcpSocket not avaliable.");
+    }
 }
+
 void TcpSocket::close() {
-    closesocket(_socket);
-    delete this->_buffer;
+    if(_socket) {
+        closesocket(_socket);
+        delete this->_buffer;
+    } else {
+        throw std::exception("TcpSocket already closed");
+    }
 }

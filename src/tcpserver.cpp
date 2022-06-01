@@ -1,13 +1,17 @@
 #include "tcpserver.h"
 
-TcpServer::TcpServer() {
-    listenSocket = socket(AF_INET, SOCK_STREAM, 0);
-    if (INVALID_SOCKET == listenSocket) {
-        std::cerr << "invalid socket error." << std::endl;
-    }
-}
+void TcpServer::listen(u_short port, std::function<void(TcpSocket)> &listener) {
 
-void TcpServer::listen(u_short port) {
+    if (this->listenSocket != 0) {
+        throw std::exception("TcpServer already listening.");
+    }
+
+    this->listenSocket = socket(AF_INET, SOCK_STREAM, 0);
+    if (INVALID_SOCKET == listenSocket) {
+        std::cerr << "Invalid socket error." << std::endl;
+        throw std::exception("Invalid socket error.");
+    }
+
     SOCKADDR_IN serveraddr;
     ZeroMemory(&serveraddr, sizeof(serveraddr));
     serveraddr.sin_family = AF_INET;
@@ -16,23 +20,33 @@ void TcpServer::listen(u_short port) {
 
     int bindResult = bind(listenSocket, (SOCKADDR *)&serveraddr, sizeof(serveraddr));
     if (SOCKET_ERROR == bindResult) {
-        std::cerr << "bind error. " << std::endl;
+        std::cerr << "Bind error. " << std::endl;
+        throw std::exception("Bind error.");
     }
 
     int listenResult = sock_listen(listenSocket, SOMAXCONN);
 	if (listenResult == SOCKET_ERROR) {
-        std::cerr << "listen error. " << std::endl;
+        std::cerr << "Listen error. " << std::endl;
+        throw std::exception("Listen error.");
     }
-    while(true) {
-        SOCKADDR_IN clientAddres;
-        int addressLength = sizeof(clientAddres);
-        SOCKET clientSocket = accept(listenSocket, (SOCKADDR*)&clientAddres, &addressLength);
-    }
+
+    this->acceptListener = listener;
+
+    listenThread = std::thread([&](){
+        while(this->listenSocket) {
+            SOCKADDR_IN clientAddres;
+            int addressLength = sizeof(clientAddres);
+            SOCKET clientSocket = accept(this->listenSocket, (SOCKADDR*)&clientAddres, &addressLength);
+            this->acceptListener(TcpSocket(clientSocket));
+        }
+        std::cout << "listen end [" << port << "]" << std::endl;
+    });
 }
 
 void TcpServer::close() {
-    closesocket(this->listenSocket);
-#ifdef _WIN32
-    WSACleanup();
-#endif
+    if (this->listenSocket) {
+        closesocket(this->listenSocket);
+    } else {
+        throw std::exception("Listen socket already closed.");
+    }
 }

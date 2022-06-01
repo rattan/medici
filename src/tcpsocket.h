@@ -47,6 +47,7 @@ class WSInitializer {
 #include <functional>
 #include <thread>
 #include <atomic>
+#include <exception>
 
 #include <stdlib.h>
 #include <stdio.h>
