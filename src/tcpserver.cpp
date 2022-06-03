@@ -1,42 +1,58 @@
 #include "tcpserver.h"
 
-void TcpServer::listen(u_short port, std::function<void(TcpSocket)> &listener) {
+TcpServer::~TcpServer() {
+    if (this->listenSocket) {
+        this->close();
+    }
+    this->listenThread->join();
+    delete this->listenThread;
+}
+
+void TcpServer::listen(u_short port, const std::function<void(const TcpSocket)> listener) {
 
     if (this->listenSocket != 0) {
         throw std::exception("TcpServer already listening.");
     }
 
-    this->listenSocket = socket(AF_INET, SOCK_STREAM, 0);
+    struct addrinfo hints, *result = nullptr;
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_protocol = IPPROTO_TCP;
+    hints.ai_flags = AI_PASSIVE;
+
+    char portStr[6]{ 0 };
+    _itoa_s(port, portStr, 10);
+    int iRes = getaddrinfo(nullptr, portStr, &hints, &result);
+    if(iRes != 0) {
+        throw std::exception("getaddrinfo fail.");
+    }
+
+    this->listenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
     if (INVALID_SOCKET == listenSocket) {
-        std::cerr << "Invalid socket error." << std::endl;
+        freeaddrinfo(result);
         throw std::exception("Invalid socket error.");
     }
 
-    SOCKADDR_IN serveraddr;
-    ZeroMemory(&serveraddr, sizeof(serveraddr));
-    serveraddr.sin_family = AF_INET;
-    serveraddr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
-    serveraddr.sin_port = htons(port);
-
-    int bindResult = bind(listenSocket, (SOCKADDR *)&serveraddr, sizeof(serveraddr));
+    int bindResult = bind(listenSocket, result->ai_addr, (int)result->ai_addrlen);
     if (SOCKET_ERROR == bindResult) {
-        std::cerr << "Bind error. " << std::endl;
+        freeaddrinfo(result);
+        closesocket(listenSocket);
         throw std::exception("Bind error.");
     }
 
+    freeaddrinfo(result);
+
     int listenResult = sock_listen(listenSocket, SOMAXCONN);
 	if (listenResult == SOCKET_ERROR) {
-        std::cerr << "Listen error. " << std::endl;
         throw std::exception("Listen error.");
     }
 
     this->acceptListener = listener;
 
-    listenThread = std::thread([&](){
+    listenThread = new std::thread([&](){
         while(this->listenSocket) {
-            SOCKADDR_IN clientAddres;
-            int addressLength = sizeof(clientAddres);
-            SOCKET clientSocket = accept(this->listenSocket, (SOCKADDR*)&clientAddres, &addressLength);
+            SOCKET clientSocket = accept(this->listenSocket, nullptr, nullptr);
             this->acceptListener(TcpSocket(clientSocket));
         }
         std::cout << "listen end [" << port << "]" << std::endl;

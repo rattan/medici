@@ -15,26 +15,34 @@ WSInitializer::~WSInitializer() {
 }
 #endif
 
-TcpSocket::TcpSocket(SOCKET socket): _socket(socket) {}
+TcpSocket::TcpSocket(const SOCKET &socket) : _socket(socket) {}
 
-void TcpSocket::setOnReceiveListener(std::function<void(char*, int)> &listener) {
+TcpSocket::~TcpSocket() {
+    if (_socket) {
+        this->close();
+    }
+    this->receiveThread->join();
+    delete this->receiveThread;
+}
+
+void TcpSocket::setOnReceiveListener(const std::function<void(char*, int)> &listener) {
     if(_socket == 0) {
         throw std::exception("Can't receive. TcpSocket not avaliable.");
     }
 
     bool receiveThreadTrigger = false;
-    if(receiveListener.load()) {
+    if(receiveListener) {
         receiveThreadTrigger = true;
     }
-    this->receiveListener.store(listener);
+    this->receiveListener = listener;
 
     if(receiveThreadTrigger) {
-        this->receiveThread = std::thread([&](){
+        this->receiveThread = new std::thread([&](){
             this->_buffer = new char[this->bufferSize];
             while(_socket) {
                 int receivedSize = recv(this->_socket, this->_buffer, this->bufferSize, 0);
                 if(receivedSize != SOCKET_ERROR) {
-                    this->receiveListener.load()(this->_buffer, receivedSize);
+                    this->receiveListener(this->_buffer, receivedSize);
                     if(receivedSize == this->bufferSize && this->bufferSize < INT_MAX) {
                         delete this->_buffer;
                         this->bufferSize <<= 1;

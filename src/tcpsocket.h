@@ -1,8 +1,11 @@
+#pragma once
+
 #ifdef _WIN32
-#include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #pragma comment (lib, "Ws2_32.lib")
+#pragma comment (lib, "Mswsock.lib")
+#pragma comment (lib, "AdvApi32.lib")
 
 class WSInitializer {
     private:
@@ -10,6 +13,11 @@ class WSInitializer {
     ~WSInitializer();
     static WSInitializer wsinitializer;
 };
+
+int(*const sock_connect)(SOCKET, const sockaddr*, int) = connect;
+int(*const sock_send)(SOCKET, const char*, int, int) = send;
+int(*const sock_listen)(SOCKET, int) = listen;
+int(*const sock_receive)(SOCKET, char*, int, int) = recv;
 #endif
 
 #ifdef __linux__
@@ -40,22 +48,23 @@ class WSInitializer {
 	typedef fd_set             FD_SET;
 	typedef int                BOOL;
 	typedef struct pollfd      WSAPOLLFD;
+
+    int(*const sock_connect)(int, const sockaddr*, socklen_t) = connect;
+    ssize_t(*const sock_send)(int, const void*, size_t, int) = send;
+    int(*const sock_listen)(SOCKET, int) = listen;
+    ssize_t(*const sock_receive)(int, void*, size_t, int) = recv;
 #endif
 
 #include <iostream>
 #include <string>
 #include <functional>
 #include <thread>
-#include <atomic>
 #include <exception>
 
 #include <stdlib.h>
 #include <stdio.h>
 
-int(*const sock_connect)(SOCKET, const sockaddr*, int) = connect;
-int(*const sock_send)(SOCKET, const char*, int, int) = send;
-int(*const sock_listen)(SOCKET, int) = listen;
-int(*const sock_receive)(SOCKET, char*, int, int) = recv;
+
 
 #define DEFAULT_BUFFER_SIZE 1024
 
@@ -66,13 +75,12 @@ private:
     SOCKET _socket = 0;
     char* _buffer = nullptr;
     int bufferSize = DEFAULT_BUFFER_SIZE;
-    std::atomic<std::function<void(char*, int)>> receiveListener;
-    std::thread receiveThread;
-    TcpSocket(SOCKET socket);
+    std::function<void(char*, int)> receiveListener;
+    std::thread *receiveThread = nullptr;
+    TcpSocket(const SOCKET& socket);
 public:
     ~TcpSocket();
-
-    void setOnReceiveListener(std::function<void(char*, int)> &listener);
+    void setOnReceiveListener(const std::function<void(char*, int)> &listener);
     void send(const char* buffer, int size) const;
     void close();
 };
