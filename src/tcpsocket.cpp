@@ -23,41 +23,39 @@ WSInitializer::~WSInitializer() {
 
 #endif
 
-void TcpSocket::ReceiveRunner::setOwner(TcpSocket* o) {
-    this->owner = o;
-}
-void TcpSocket::ReceiveRunner::operator()() {
-    owner->_buffer = new char[owner->bufferSize];
-    while (owner->_socket != INVALID_SOCKET) {
-        int receivedSize = sock_receive(owner->_socket, owner->_buffer, owner->bufferSize, 0);
-        if (receivedSize != SOCKET_ERROR) {
-            const_cast<TcpSocket*>(owner)->receiveListener(owner->_buffer, receivedSize);
-            if (receivedSize == owner->bufferSize && owner->bufferSize < INT_MAX) {
-                delete owner->_buffer;
-                owner ->bufferSize <<= 1;
-                owner->_buffer = new char[owner->bufferSize];
+TcpSocket::ReceiveRunner::ReceiveRunner(TcpSocket* owner) : _owner(owner) {}
+
+void TcpSocket::ReceiveRunner::run() {
+    new(&receiveThread) std::thread([&]() {
+        int bufSize = DEFAULT_BUFFER_SIZE;
+        char* buffer = new char[bufSize];
+        while (_owner->_socket != INVALID_SOCKET) {
+            int receivedSize = sock_receive(_owner->_socket, buffer, bufSize, 0);
+            if (receivedSize != SOCKET_ERROR) {
+                _owner->receiveListener(buffer, receivedSize);
+                if (receivedSize == bufSize && bufSize < INT_MAX) {
+                    delete[] buffer;
+                    bufSize <<= 1;
+                    buffer = new char[bufSize];
+                }
             }
         }
-    }
-    std::cout << "receive end" << std::endl;
-    delete[] owner->_buffer;
+        std::cout << "receive end" << std::endl;
+        delete[] buffer;
+        delete _owner->runner;
+        });
 }
 
 TcpSocket::TcpSocket(SOCKET socket) : _socket(socket) {
-    this->runner.setOwner(this);
 }
 
-TcpSocket::TcpSocket(TcpSocket&& socket) {
-    this->_socket = socket._socket;
-    this->_buffer = socket._buffer;
-    this->bufferSize = socket.bufferSize;
-    std::swap(this->receiveListener, socket.receiveListener);
-    this->receiveThread = std::move(socket.receiveThread);
-    this->runner = std::move(socket.runner);
-    this->runner.setOwner(this);
+TcpSocket::TcpSocket(TcpSocket&& socket)
+    : _socket(socket._socket),
+    receiveListener(std::move(socket.receiveListener)),
+    runner(socket.runner) {
+    new(runner) ReceiveRunner(this);
     socket._socket = INVALID_SOCKET;
-    socket._buffer = nullptr;
-    socket.runner.setOwner(nullptr);
+    socket.runner = nullptr;
 }
 
 TcpSocket::~TcpSocket() {
@@ -78,7 +76,8 @@ void TcpSocket::setOnReceiveListener(const std::function<void(char*, int)> &list
     this->receiveListener = listener;
 
     if(receiveThreadTrigger) {
-        this->receiveThread = std::move(std::thread(runner));
+        runner = new ReceiveRunner(this);
+        runner->run();
     }
 }
 

@@ -75,18 +75,15 @@ class TcpSocket {
     friend class TcpServer;
 private:
     SOCKET _socket = 0;
-    char* _buffer = nullptr;
-    int bufferSize = DEFAULT_BUFFER_SIZE;
     std::function<void(char*, int)> receiveListener;
-    std::thread receiveThread;
     TcpSocket(SOCKET socket);
-
     class ReceiveRunner {
-        volatile TcpSocket* owner;
+        TcpSocket* _owner;
+        std::thread receiveThread;
+        ReceiveRunner(TcpSocket* owner);
     public:
-        void setOwner(TcpSocket* o);
-        void operator()();
-    } runner;
+        void run();
+    } *runner;
 public:
     TcpSocket(TcpSocket&& socket);
     ~TcpSocket();
