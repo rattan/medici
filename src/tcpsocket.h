@@ -8,10 +8,12 @@
 #pragma comment (lib, "AdvApi32.lib")
 
 class WSInitializer {
-    private:
+    friend class TcpClient;
+    friend class TcpServer;
+private:
+    bool init = false;
     WSInitializer();
     ~WSInitializer();
-    static WSInitializer wsinitializer;
 };
 
 int(*const sock_connect)(SOCKET, const sockaddr*, int) = connect;
@@ -76,9 +78,17 @@ private:
     char* _buffer = nullptr;
     int bufferSize = DEFAULT_BUFFER_SIZE;
     std::function<void(char*, int)> receiveListener;
-    std::thread *receiveThread = nullptr;
-    TcpSocket(const SOCKET& socket);
+    std::thread receiveThread;
+    TcpSocket(SOCKET socket);
+
+    class ReceiveRunner {
+        volatile TcpSocket* owner;
+    public:
+        void setOwner(TcpSocket* o);
+        void operator()();
+    } runner;
 public:
+    TcpSocket(TcpSocket&& socket);
     ~TcpSocket();
     void setOnReceiveListener(const std::function<void(char*, int)> &listener);
     void send(const char* buffer, int size) const;

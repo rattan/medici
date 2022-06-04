@@ -1,15 +1,16 @@
 #include "tcpserver.h"
 
 TcpServer::~TcpServer() {
-    if (this->listenSocket) {
-        this->close();
-    }
-    this->listenThread->join();
-    delete this->listenThread;
+    //if (this->listenThread) {
+    //    this->listenThread->join();
+    //    delete this->listenThread;
+    //}
 }
 
-void TcpServer::listen(u_short port, const std::function<void(const TcpSocket)> listener) {
-
+void TcpServer::listen(u_short port, const std::function<void(const TcpSocket)> &listener) {
+#ifdef _WIN32
+    static WSInitializer initializer;
+#endif
     if (this->listenSocket != 0) {
         throw std::exception("TcpServer already listening.");
     }

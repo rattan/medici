@@ -1,7 +1,9 @@
 #include "tcpclient.h"
 
 TcpSocket TcpClient::connect(const char* ipAddress, u_short port) {
-
+#ifdef _WIN32
+    static WSInitializer initializer;
+#endif
     struct addrinfo hints, *result = nullptr;
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_UNSPEC;
