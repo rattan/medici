@@ -23,7 +23,7 @@ WSInitializer::~WSInitializer() {
 
 #endif
 
-TcpSocket::ReceiveRunner::ReceiveRunner(TcpSocket* owner) : _owner(owner) {}
+TcpSocket::ReceiveRunner::ReceiveRunner(TcpSocket* owner): _owner(owner) {}
 
 void TcpSocket::ReceiveRunner::run() {
     new(&receiveThread) std::thread([&]() {
@@ -53,14 +53,16 @@ TcpSocket::TcpSocket(TcpSocket&& socket)
     : _socket(socket._socket),
     receiveListener(std::move(socket.receiveListener)),
     runner(socket.runner) {
-    new(runner) ReceiveRunner(this);
+    if(runner) {
+        new(runner) ReceiveRunner(this);
+    }
     socket._socket = INVALID_SOCKET;
     socket.runner = nullptr;
 }
 
 void TcpSocket::setOnReceiveListener(const std::function<void(char*, int)> &listener) {
     if(_socket == 0) {
-        throw std::exception("Can't receive. TcpSocket not avaliable.");
+        throw std::runtime_error("Can't receive. TcpSocket not avaliable.");
     }
 
     bool receiveThreadTrigger = false;
@@ -79,14 +81,14 @@ void TcpSocket::send(const char* buffer, int size) const {
     if(_socket) {
         sock_send(_socket, buffer, size, 0);
     } else {
-        throw std::exception("Can't send. TcpSocket not avaliable.");
+        throw std::runtime_error("Can't send. TcpSocket not avaliable.");
     }
 }
 
 void TcpSocket::close() {
     if(_socket) {
-        closesocket(_socket);
+        shutdown(_socket, SHUT_RDWR);
     } else {
-        throw std::exception("TcpSocket already closed");
+        throw std::runtime_error("TcpSocket already closed");
     }
 }

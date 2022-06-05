@@ -8,13 +8,12 @@ TcpServer::~TcpServer() {
 }
 
 void TcpServer::listen(u_short port, const std::function<void(const TcpSocket)> &listener) {
-#ifdef _WIN32
-    static WSInitializer initializer;
-#endif
     if (this->listenSocket != 0) {
-        throw std::exception("TcpServer already listening.");
+        throw std::runtime_error("TcpServer already listening.");
     }
 
+#ifdef _WIN32
+    static WSInitializer initializer;
     struct addrinfo hints, *result = nullptr;
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_INET;
@@ -26,27 +25,48 @@ void TcpServer::listen(u_short port, const std::function<void(const TcpSocket)> 
     _itoa_s(port, portStr, 10);
     int iRes = getaddrinfo(nullptr, portStr, &hints, &result);
     if(iRes != 0) {
-        throw std::exception("getaddrinfo fail.");
+        throw std::runtime_error("getaddrinfo fail.");
     }
 
     this->listenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
     if (INVALID_SOCKET == listenSocket) {
         freeaddrinfo(result);
-        throw std::exception("Invalid socket error.");
+        throw std::runtime_error("Invalid socket error.");
     }
+    
+    int option = 1;
+    setsockopt(this->listenSocket, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
 
     int bindResult = bind(listenSocket, result->ai_addr, (int)result->ai_addrlen);
     if (SOCKET_ERROR == bindResult) {
         freeaddrinfo(result);
         closesocket(listenSocket);
-        throw std::exception("Bind error.");
+        throw std::runtime_error("Bind error.");
     }
-
     freeaddrinfo(result);
+#endif
+    
+#if defined __APPLE__ || defined __linux__
+    this->listenSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    
+    int option = 1;
+    setsockopt(this->listenSocket, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
+    
+    struct sockaddr_in sin;
+    memset(&sin, 0, sizeof(sin));
+    sin.sin_len = sizeof(sin);
+    sin.sin_family = AF_INET;
+    sin.sin_port = htons(port);
+    sin.sin_addr.s_addr= INADDR_ANY;
+ 
+    if (bind(this->listenSocket, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
+        throw std::runtime_error("Bind Error.");
+    }
+#endif
 
     int listenResult = sock_listen(listenSocket, SOMAXCONN);
 	if (listenResult == SOCKET_ERROR) {
-        throw std::exception("Listen error.");
+        throw std::runtime_error("Listen error.");
     }
 
     this->acceptListener = listener;
@@ -62,8 +82,8 @@ void TcpServer::listen(u_short port, const std::function<void(const TcpSocket)> 
 
 void TcpServer::close() {
     if (this->listenSocket) {
-        closesocket(this->listenSocket);
+        shutdown(this->listenSocket, SHUT_RDWR);
     } else {
-        throw std::exception("Listen socket already closed.");
+        throw std::runtime_error("Listen socket already closed.");
     }
 }

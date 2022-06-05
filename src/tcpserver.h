@@ -2,8 +2,6 @@
 
 #include "tcpsocket.h"
 
-#include <thread>
-
 class TcpServer {
 private:
     SOCKET listenSocket = 0;
