@@ -58,12 +58,6 @@ TcpSocket::TcpSocket(TcpSocket&& socket)
     socket.runner = nullptr;
 }
 
-TcpSocket::~TcpSocket() {
-    //if (this->receiveThread) {
-    //    delete this->receiveThread;
-    //}
-}
-
 void TcpSocket::setOnReceiveListener(const std::function<void(char*, int)> &listener) {
     if(_socket == 0) {
         throw std::exception("Can't receive. TcpSocket not avaliable.");

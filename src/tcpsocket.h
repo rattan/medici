@@ -80,13 +80,12 @@ private:
     class ReceiveRunner {
         TcpSocket* _owner;
         std::thread receiveThread;
-        ReceiveRunner(TcpSocket* owner);
     public:
+        ReceiveRunner(TcpSocket* owner);
         void run();
     } *runner;
 public:
     TcpSocket(TcpSocket&& socket);
-    ~TcpSocket();
     void setOnReceiveListener(const std::function<void(char*, int)> &listener);
     void send(const char* buffer, int size) const;
     void close();
