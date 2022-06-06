@@ -8,7 +8,7 @@ TcpServer::~TcpServer() {
 }
 
 void TcpServer::listen(u_short port, const std::function<void(const TcpSocket)> &listener) {
-    if (this->listenSocket != 0) {
+    if (this->listenSocket != INVALID_SOCKET) {
         throw std::runtime_error("TcpServer already listening.");
     }
 
@@ -81,8 +81,14 @@ void TcpServer::listen(u_short port, const std::function<void(const TcpSocket)> 
 }
 
 void TcpServer::close() {
-    if (this->listenSocket) {
+    if (this->listenSocket != INVALID_SOCKET) {
+        #ifdef _WIN32
+        shutdown(this->listenSocket, SD_BOTH);
+        closesocket(this->listenSocket);
+        #endif
+        #if defined __linux__ || __APPLE__
         shutdown(this->listenSocket, SHUT_RDWR);
+        #endif
     } else {
         throw std::runtime_error("Listen socket already closed.");
     }

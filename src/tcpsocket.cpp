@@ -1,6 +1,8 @@
 #include "tcpsocket.h"
 
 #ifdef _WIN32
+
+bool WSInitializer::init = false;
 WSInitializer::WSInitializer() {
     if (this->init == false) {
         this->init = true;
@@ -61,7 +63,7 @@ TcpSocket::TcpSocket(TcpSocket&& socket)
 }
 
 void TcpSocket::setOnReceiveListener(const std::function<void(char*, int)> &listener) {
-    if(_socket == 0) {
+    if(_socket == INVALID_SOCKET) {
         throw std::runtime_error("Can't receive. TcpSocket not avaliable.");
     }
 
@@ -78,7 +80,7 @@ void TcpSocket::setOnReceiveListener(const std::function<void(char*, int)> &list
 }
 
 void TcpSocket::send(const char* buffer, int size) const {
-    if(_socket) {
+    if(_socket != INVALID_SOCKET) {
         sock_send(_socket, buffer, size, 0);
     } else {
         throw std::runtime_error("Can't send. TcpSocket not avaliable.");
@@ -86,8 +88,14 @@ void TcpSocket::send(const char* buffer, int size) const {
 }
 
 void TcpSocket::close() {
-    if(_socket) {
-        shutdown(_socket, SHUT_RDWR);
+    if(_socket != INVALID_SOCKET) {
+        #ifdef _WIN32
+        shutdown(this->_socket, SD_BOTH);
+        closesocket(this->_socket);
+        #endif
+        #if defined __linux__ || __APPLE__
+        shutdown(this->_socket, SHUT_RDWR);
+        #endif
     } else {
         throw std::runtime_error("TcpSocket already closed");
     }

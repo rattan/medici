@@ -11,7 +11,7 @@ class WSInitializer {
     friend class TcpClient;
     friend class TcpServer;
 private:
-    bool init = false;
+    static bool init;
     WSInitializer();
     ~WSInitializer();
 };
@@ -35,13 +35,8 @@ int(*const sock_receive)(SOCKET, char*, int, int) = recv;
     #include <signal.h>
     #include <poll.h>
 
-    #define INVALID_SOCKET    -1
-    #define SOCKET_ERROR      -1
-    #define ZeroMemory        bzero
-    #define WSAGetLastError() errno
-    #define WSAEWOULDBLOCK    EWOULDBLOCK
-    #define TRUE              1
-    #define FALSE             0
+    #define INVALID_SOCKET (SOCKET)(~0)
+    #define SOCKET_ERROR (-1)
 
     #define SOCKET int
     typedef struct sockaddr    SOCKADDR;
