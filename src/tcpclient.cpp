@@ -41,7 +41,7 @@ TcpSocket TcpClient::connect(const char* ipAddress, u_short port) {
     clientSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
     
     SOCKADDR_IN serverAddr;
-    ZeroMemory(&serverAddr, sizeof(serverAddr));
+    std::memset(&serverAddr, 0, sizeof(serverAddr));
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_addr.s_addr = inet_addr(ipAddress);
     serverAddr.sin_port = htons(port);
