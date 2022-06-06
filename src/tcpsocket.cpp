@@ -40,6 +40,9 @@ void TcpSocket::ReceiveRunner::run() {
                     bufSize <<= 1;
                     buffer = new char[bufSize];
                 }
+                if(receivedSize == 0) {
+                    break;
+                }
             }
         }
         std::cout << "receive end" << std::endl;

@@ -56,6 +56,7 @@ int(*const sock_receive)(SOCKET, char*, int, int) = recv;
 #include <functional>
 #include <thread>
 #include <stdexcept>
+#include <climits>
 
 #include <stdlib.h>
 #include <stdio.h>

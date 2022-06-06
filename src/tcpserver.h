@@ -4,7 +4,7 @@
 
 class TcpServer {
 private:
-    SOCKET listenSocket = 0;
+    SOCKET listenSocket = INVALID_SOCKET;
     std::function<void(TcpSocket)> acceptListener;
     std::thread *listenThread = nullptr;
 public:
