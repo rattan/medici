@@ -1,5 +1,8 @@
 #include "rect.h"
 
+Rect::Rect():
+Rect(Point(0, 0), 0, 0) {}
+
 Rect::Rect(const Point &topLeft, unsigned int width, unsigned int height):
 _topLeft(topLeft),
 _width(width),

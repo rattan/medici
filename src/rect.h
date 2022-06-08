@@ -17,6 +17,7 @@ class Rect {
     Point _topLeft;
     unsigned int _width, _height;
 public:
+    Rect();
     Rect(int top, int left, unsigned int width, unsigned int height);
     Rect(const Point &topLeft, unsigned int width, unsigned int height);
 

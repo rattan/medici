@@ -35,7 +35,7 @@ void TcpServer::listen(u_short port, const std::function<void(const TcpSocket)> 
     }
     
     int option = 1;
-    setsockopt(this->listenSocket, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
+    setsockopt(this->listenSocket, SOL_SOCKET, SO_REUSEADDR, (char*) & option, sizeof(option));
 
     int bindResult = bind(listenSocket, result->ai_addr, (int)result->ai_addrlen);
     if (SOCKET_ERROR == bindResult) {
