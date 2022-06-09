@@ -10,3 +10,12 @@ Display::Display (const std::string &displayConfig) {
         this->_primary = true;
     }
 }
+
+std::string Display::toString() {
+    std::stringstream result;
+    result<<displayRect.top()<<" "<<displayRect.left()<<" "<<displayRect.width()<<" "<<displayRect.height();
+    if(this->_primary) {
+        result<<" primary";
+    }
+    return result.str();
+}

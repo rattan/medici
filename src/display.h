@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <sstream>
 #include <regex>
 
 #include "rect.h"
@@ -11,4 +12,5 @@ class Display {
     bool _control;
     public:
     Display (const std::string &displayConfig);
+    std::string toString();
 };

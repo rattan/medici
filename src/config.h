@@ -4,6 +4,7 @@
 
 #include <fstream>
 #include <string>
+#include <sstream>
 #include <list>
 #include <regex>
 #include <iostream>
@@ -34,9 +35,12 @@ class Config {
     
     std::list<Config> connections;
     
-    void parse(const std::list<std::string> &configLines);
-    void assign(const std::string &key, const std::string &value);
 
+    void clear();
+    void parse(const std::list<std::string> &configLines);
+    void assign(Config* const target, const std::string &key, const std::string &value);
+    std::string toString() const;
+    std::string toStringMe() const;
 public:
     void load(const std::string from = DEFAULT_CONFIG_FILE);
     void save(const std::string to = DEFAULT_CONFIG_FILE) const;
