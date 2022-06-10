@@ -3,17 +3,17 @@
 void Config::clear() {
     appVersion = DEFAULT_APP_VERSION;
     protocolVersion = DEFAULT_PROTOCOL_VERSION;
-    name.clear();
-    uuid.clear();
-    ipAddress.clear();
-    displays.clear();
-    connections.clear();
+    _name.clear();
+    _uuid.clear();
+    _ipAddress.clear();
+    _displays.clear();
+    _connections.clear();
 }
 
 std::string Config::toString() const {
     std::stringstream result;
     result<<"ME:\n"<<toStringMe();
-    for(auto& config: connections) {
+    for(auto& config: _connections) {
         result<<"OTHER:\n";
         result<<config.toStringMe();
     }
@@ -24,10 +24,10 @@ std::string Config::toStringMe() const {
     std::stringstream result;
     result<<KEY_APP_VERSION<<"="<<appVersion<<"\n";
     result<<KEY_PROTOCOL_VERSION<<"="<<protocolVersion<<"\n";
-    result<<KEY_NAME<<"="<<name<<"\n";
-    result<<KEY_UUID<<"="<<uuid<<"\n";
-    result<<KEY_IP_ADDRESS<<"="<<ipAddress<<"\n";
-    for(auto display: displays) {
+    result<<KEY_NAME<<"="<<_name<<"\n";
+    result<<KEY_UUID<<"="<<_uuid<<"\n";
+    result<<KEY_IP_ADDRESS<<"="<<_ipAddress<<"\n";
+    for(auto display: _displays) {
         result<<KEY_DISPLAY<<"=" << display.toString() << "\n";
     }
     return result.str();
@@ -69,7 +69,7 @@ void Config::parse(const std::list<std::string> &configLines)
     {
         if(std::regex_match(line, std::regex(R"((ME|OTHER):)"))) {
             if(target == &other) {
-                this->connections.push_back(*target);
+                this->_connections.push_back(*target);
             }
             switch (keyHash(line.c_str()))
             {
@@ -96,7 +96,7 @@ void Config::parse(const std::list<std::string> &configLines)
         }
     }
     if(target == &other) {
-        this->connections.push_back(*target);
+        this->_connections.push_back(*target);
     }
 
     std::cout << toString() << std::endl;
@@ -113,16 +113,16 @@ void Config::assign(Config* const target, const std::string &key, const std::str
         target->protocolVersion = std::stoi(value);
         break;
     case keyHash(KEY_NAME):
-        target->name = value;
+        target->_name = value;
         break;
     case keyHash(KEY_UUID):
-        target->uuid = value;
+        target->_uuid = value;
         break;
     case keyHash(KEY_IP_ADDRESS):
-        target->ipAddress = value;
+        target->_ipAddress = value;
         break;
     case keyHash(KEY_DISPLAY):
-        target->displays.push_back(Display(value));
+        target->_displays.push_back(Display(value));
         break;
     default:
         std::cerr << "[" << key << "] is not valid key. " << std::endl;
@@ -136,4 +136,23 @@ void Config::save(const std::string to) const
     fout.open(to);
     fout<<result;
     fout.close();
+}
+
+std::string Config::name() const {
+    return this->_name;
+}
+std::string Config::uuid() {
+    if(this->_uuid.empty()) {
+        this->_uuid = Uuid::gen();
+    }
+    return this->_uuid;
+}
+std::string Config::ipAddress() const {
+    return this->_ipAddress;
+}
+const std::list<Display>& Config::displays() const {
+    return this->_displays;
+}
+const std::list<Config>& Config::connections() const {
+    return this->_connections;
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "display.h"
+#include "uuid.h"
 
 #include <fstream>
 #include <string>
@@ -28,12 +29,12 @@
 class Config {
     int appVersion = DEFAULT_APP_VERSION;
     int protocolVersion = DEFAULT_PROTOCOL_VERSION;
-    std::string name;
-    std::string uuid;
-    std::string ipAddress;
-    std::list<Display> displays;
+    std::string _name;
+    std::string _uuid;
+    std::string _ipAddress;
+    std::list<Display> _displays;
     
-    std::list<Config> connections;
+    std::list<Config> _connections;
     
 
     void clear();
@@ -44,4 +45,10 @@ class Config {
 public:
     void load(const std::string from = DEFAULT_CONFIG_FILE);
     void save(const std::string to = DEFAULT_CONFIG_FILE) const;
+
+    std::string name() const;
+    std::string uuid();
+    std::string ipAddress() const;
+    const std::list<Display>& displays() const;
+    const std::list<Config>& connections() const;
 };
