@@ -27,10 +27,10 @@
 
 
 class Config {
-    int appVersion = DEFAULT_APP_VERSION;
-    int protocolVersion = DEFAULT_PROTOCOL_VERSION;
+    int _appVersion = DEFAULT_APP_VERSION;
+    int _protocolVersion = DEFAULT_PROTOCOL_VERSION;
     std::string _name;
-    std::string _uuid;
+    std::string _uuid = Uuid::gen();
     std::string _ipAddress;
     std::list<Display> _displays;
     
@@ -46,8 +46,10 @@ public:
     void load(const std::string from = DEFAULT_CONFIG_FILE);
     void save(const std::string to = DEFAULT_CONFIG_FILE) const;
 
+    int appVersion() const;
+    int protocolVersion() const;
     std::string name() const;
-    std::string uuid();
+    std::string uuid() const;
     std::string ipAddress() const;
     const std::list<Display>& displays() const;
     const std::list<Config>& connections() const;

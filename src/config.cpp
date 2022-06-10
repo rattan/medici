@@ -1,8 +1,8 @@
 #include "config.h"
 
 void Config::clear() {
-    appVersion = DEFAULT_APP_VERSION;
-    protocolVersion = DEFAULT_PROTOCOL_VERSION;
+    _appVersion = DEFAULT_APP_VERSION;
+    _protocolVersion = DEFAULT_PROTOCOL_VERSION;
     _name.clear();
     _uuid.clear();
     _ipAddress.clear();
@@ -22,11 +22,11 @@ std::string Config::toString() const {
 
 std::string Config::toStringMe() const {
     std::stringstream result;
-    result<<KEY_APP_VERSION<<"="<<appVersion<<"\n";
-    result<<KEY_PROTOCOL_VERSION<<"="<<protocolVersion<<"\n";
-    result<<KEY_NAME<<"="<<_name<<"\n";
-    result<<KEY_UUID<<"="<<_uuid<<"\n";
-    result<<KEY_IP_ADDRESS<<"="<<_ipAddress<<"\n";
+    result<<KEY_APP_VERSION<<"="<<appVersion()<<"\n";
+    result<<KEY_PROTOCOL_VERSION<<"="<<protocolVersion()<<"\n";
+    result<<KEY_NAME<<"="<<name()<<"\n";
+    result<<KEY_UUID<<"="<<uuid()<<"\n";
+    result<<KEY_IP_ADDRESS<<"="<<ipAddress()<<"\n";
     for(auto display: _displays) {
         result<<KEY_DISPLAY<<"=" << display.toString() << "\n";
     }
@@ -107,10 +107,10 @@ void Config::assign(Config* const target, const std::string &key, const std::str
     switch (keyHash(key.c_str()))
     {
     case keyHash(KEY_APP_VERSION):
-        target->appVersion = std::stoi(value);
+        target->_appVersion = std::stoi(value);
         break;
     case keyHash(KEY_PROTOCOL_VERSION):
-        target->protocolVersion = std::stoi(value);
+        target->_protocolVersion = std::stoi(value);
         break;
     case keyHash(KEY_NAME):
         target->_name = value;
@@ -138,13 +138,16 @@ void Config::save(const std::string to) const
     fout.close();
 }
 
+int Config::appVersion() const {
+    return this->_appVersion;
+}
+int Config::protocolVersion() const {
+    return this->_protocolVersion;
+}
 std::string Config::name() const {
     return this->_name;
 }
-std::string Config::uuid() {
-    if(this->_uuid.empty()) {
-        this->_uuid = Uuid::gen();
-    }
+std::string Config::uuid() const {
     return this->_uuid;
 }
 std::string Config::ipAddress() const {
