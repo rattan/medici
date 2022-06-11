@@ -34,6 +34,8 @@ int(*const sock_receive)(SOCKET, char*, int, int) = recv;
     #include <pthread.h>
     #include <signal.h>
     #include <poll.h>
+    #include <netinet/in.h>
+    #include <netdb.h>
 
     #define INVALID_SOCKET (SOCKET)(~0)
     #define SOCKET_ERROR (-1)
@@ -60,6 +62,8 @@ int(*const sock_receive)(SOCKET, char*, int, int) = recv;
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
+
 
 
 
@@ -84,4 +88,7 @@ public:
     void setOnReceiveListener(const std::function<void(char*, int)> &listener);
     void send(const char* buffer, int size) const;
     void close();
+    
+    static std::string hostName();
+    static std::string hostIp();
 };

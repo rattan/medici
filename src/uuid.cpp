@@ -44,7 +44,7 @@ std::string Uuid::gen5() {
     return UUID_NIL;
 }
 
-std::string Uuid::gen(version ver = version::FOUR) {
+std::string Uuid::gen(version ver) {
     switch(ver) {
         case version::NIL:
         case version::ONE:

@@ -103,3 +103,21 @@ void TcpSocket::close() {
         throw std::runtime_error("TcpSocket already closed");
     }
 }
+
+
+std::string TcpSocket::hostName() {
+    char host[256];
+    gethostname(host, sizeof(host));
+    return std::string(host);
+}
+
+std::string TcpSocket::hostIp() {
+    char host[256];
+    char *ip;
+    struct hostent *host_entry;
+    int hostname;
+    hostname = gethostname(host, sizeof(host));
+    host_entry = gethostbyname(host);
+    ip = inet_ntoa(*((struct in_addr*) host_entry->h_addr_list[0])); //Convert into IP string
+    return std::string(ip);
+}

@@ -10,11 +10,19 @@ void Config::clear() {
     _connections.clear();
 }
 
+void Config::initDefaultHost() {
+    this->_name = TcpSocket::hostName();
+    this->_uuid = Uuid::gen();
+    this->_ipAddress = TcpSocket::hostIp();
+    this->_displays.clear();
+    this->_connections.clear();
+}
+
 std::string Config::toString() const {
     std::stringstream result;
-    result<<"ME:\n"<<toStringMe();
+    result<<"HOST:\n"<<toStringMe();
     for(auto& config: _connections) {
-        result<<"OTHER:\n";
+        result<<"CONNECTION:\n";
         result<<config.toStringMe();
     }
     return result.str();
@@ -52,12 +60,11 @@ void Config::load(const std::string from)
         }
     }
     fin.close();
-    parse(configList);
-}
-
-constexpr unsigned long long keyHash(const char* key)
-{
-    return key[0] ? static_cast<unsigned long long>(key[0]) + 0xEDB8832Full * keyHash(key + 1) : 8603;
+    if(configList.empty()) {
+        initDefaultHost();
+    } else {
+        parse(configList);
+    }
 }
 
 void Config::parse(const std::list<std::string> &configLines)
@@ -67,24 +74,28 @@ void Config::parse(const std::list<std::string> &configLines)
     clear();
     for (auto& line : configLines)
     {
-        if(std::regex_match(line, std::regex(R"((ME|OTHER):)"))) {
+        if(std::regex_match(line, std::regex(R"((HOST|CONNECTION):)"))) {
             if(target == &other) {
                 this->_connections.push_back(*target);
             }
-            switch (keyHash(line.c_str()))
+            switch (TextUtil::hash(line.c_str()))
             {
-            case keyHash("ME:"):
+            case TextUtil::hash("HOST:"):
                 target = this;
                 break;
-            case keyHash("OTHER:"):
+            case TextUtil::hash("CONNECTION:"):
                 target = &other;
                 break;
             }
-            target->clear();
+            if(target == &other) {
+                target->clear();
+            } else if(target == this) {
+                target->initDefaultHost();
+            }
             continue;
         }
 
-        std::regex re(R"((#)?(.*)=(.*))");
+        std::regex re(R"((#)?(.*?)=(.*))");
         std::smatch match;
         if (std::regex_match(line, match, re))
         {
@@ -98,30 +109,28 @@ void Config::parse(const std::list<std::string> &configLines)
     if(target == &other) {
         this->_connections.push_back(*target);
     }
-
-    std::cout << toString() << std::endl;
 }
 
 void Config::assign(Config* const target, const std::string &key, const std::string &value)
 {
-    switch (keyHash(key.c_str()))
+    switch (TextUtil::hash(key.c_str()))
     {
-    case keyHash(KEY_APP_VERSION):
+    case TextUtil::hash(KEY_APP_VERSION):
         target->_appVersion = std::stoi(value);
         break;
-    case keyHash(KEY_PROTOCOL_VERSION):
+    case TextUtil::hash(KEY_PROTOCOL_VERSION):
         target->_protocolVersion = std::stoi(value);
         break;
-    case keyHash(KEY_NAME):
+    case TextUtil::hash(KEY_NAME):
         target->_name = value;
         break;
-    case keyHash(KEY_UUID):
+    case TextUtil::hash(KEY_UUID):
         target->_uuid = value;
         break;
-    case keyHash(KEY_IP_ADDRESS):
+    case TextUtil::hash(KEY_IP_ADDRESS):
         target->_ipAddress = value;
         break;
-    case keyHash(KEY_DISPLAY):
+    case TextUtil::hash(KEY_DISPLAY):
         target->_displays.push_back(Display(value));
         break;
     default:
