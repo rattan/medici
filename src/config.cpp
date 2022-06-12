@@ -1,5 +1,13 @@
 #include "config.h"
 
+Config::Config() {
+    load();
+}
+
+Config::~Config() {
+    save();
+}
+
 void Config::clear() {
     _appVersion = DEFAULT_APP_VERSION;
     _protocolVersion = DEFAULT_PROTOCOL_VERSION;
@@ -145,6 +153,15 @@ void Config::save(const std::string to) const
     fout.open(to);
     fout<<result;
     fout.close();
+}
+
+Config& Config::instance() {
+    static Config i;
+    return i;
+}
+
+void Config::setName(std::string &name) {
+    this->_name = name;
 }
 
 int Config::appVersion() const {

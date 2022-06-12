@@ -38,17 +38,25 @@ class Config {
     
     std::list<Config> _connections;
     
-
+    Config();
+    
     void clear();
     void initDefaultHost();
     void parse(const std::list<std::string> &configLines);
     void assign(Config* const target, const std::string &key, const std::string &value);
     std::string toString() const;
     std::string toStringMe() const;
-public:
     void load(const std::string from = DEFAULT_CONFIG_FILE);
     void save(const std::string to = DEFAULT_CONFIG_FILE) const;
 
+public:
+    static Config& instance();
+    ~Config();
+
+
+
+    void setName(std::string& name);
+    
     int appVersion() const;
     int protocolVersion() const;
     std::string name() const;
