@@ -12,6 +12,7 @@
 #include <regex>
 #include <iostream>
 #include <functional>
+#include <type_traits>
 
 #define DEFAULT_CONFIG_FILE ".config"
 
@@ -39,6 +40,7 @@ class Config {
     std::list<Config> _connections;
     
     Config();
+    Config(std::true_type);
     
     void clear();
     void initDefaultHost();

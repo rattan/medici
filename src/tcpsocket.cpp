@@ -106,18 +106,30 @@ void TcpSocket::close() {
 
 
 std::string TcpSocket::hostName() {
-    char host[256];
+#ifdef _WIN32
+    static WSInitializer initializer;
+#endif
+    char host[256]{ 0 };
     gethostname(host, sizeof(host));
     return std::string(host);
 }
 
 std::string TcpSocket::hostIp() {
-    char host[256];
-    char *ip;
-    struct hostent *host_entry;
-    int hostname;
-    hostname = gethostname(host, sizeof(host));
-    host_entry = gethostbyname(host);
-    ip = inet_ntoa(*((struct in_addr*) host_entry->h_addr_list[0])); //Convert into IP string
+#ifdef _WIN32
+    static WSInitializer initializer;
+#endif
+    char host[256]{ 0 };
+    int hostname = gethostname(host, sizeof(host));
+#ifdef _WIN32
+    struct addrinfo* servinfo;
+    getaddrinfo(host, nullptr, nullptr, &servinfo);
+    char ip[256]{ 0 };
+    inet_ntop(AF_INET, servinfo, ip, sizeof(ip));
+#endif
+#if defined __APPLE__ || defined __linux__
+    struct hostent* host_entry = gethostbyname(host);
+    char* ip = inet_ntoa(*((struct in_addr*)host_entry->h_addr_list[0])); //Convert into IP string
+#endif
+
     return std::string(ip);
 }

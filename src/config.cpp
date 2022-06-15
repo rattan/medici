@@ -1,6 +1,9 @@
 #include "config.h"
 
 Config::Config() {
+}
+
+Config::Config(std::true_type) {
     load();
 }
 
@@ -156,7 +159,7 @@ void Config::save(const std::string to) const
 }
 
 Config& Config::instance() {
-    static Config i;
+    static Config i{ std::true_type() };
     return i;
 }
 

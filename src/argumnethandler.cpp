@@ -21,7 +21,7 @@ void ArgumentHandler::parse() {
     }
 }
 
-void ArgumentHandler::consumeConfig(std::__list_iterator<std::string, void*> &it) {
+void ArgumentHandler::consumeConfig(std::list<std::string>::iterator &it) {
     Config &c = Config::instance();
     if(it != this->_argv.end()) {
         switch(TextUtil::hash(it->c_str())) {
@@ -35,7 +35,7 @@ void ArgumentHandler::consumeConfig(std::__list_iterator<std::string, void*> &it
     ++it;
 }
 
-void ArgumentHandler::throwInvalidArgument(std::__list_iterator<std::string, void*> &it) {
+void ArgumentHandler::throwInvalidArgument(std::list<std::string>::iterator&it) {
     std::stringstream errorMessage;
     errorMessage<<"invalid argument: "<<*it;
     throw std::runtime_error(errorMessage.str());

@@ -10,6 +10,7 @@
 class WSInitializer {
     friend class TcpClient;
     friend class TcpServer;
+    friend class TcpSocket;
 private:
     static bool init;
     WSInitializer();
@@ -36,6 +37,7 @@ int(*const sock_receive)(SOCKET, char*, int, int) = recv;
     #include <poll.h>
     #include <netinet/in.h>
     #include <netdb.h>
+    #include <unistd.h>
 
     #define INVALID_SOCKET (SOCKET)(~0)
     #define SOCKET_ERROR (-1)
@@ -62,7 +64,6 @@ int(*const sock_receive)(SOCKET, char*, int, int) = recv;
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
 
 
 

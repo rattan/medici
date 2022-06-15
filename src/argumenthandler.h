@@ -18,9 +18,9 @@
 class ArgumentHandler {
     std::list<std::string> _argv;
     void parse();
-    void consumeConfig(std::__list_iterator<std::string, void*> &it);
+    void consumeConfig(std::list<std::string>::iterator&it);
     
-    void throwInvalidArgument(std::__list_iterator<std::string, void*> &it);
+    void throwInvalidArgument(std::list<std::string>::iterator &it);
 public:
     ArgumentHandler(int argc, char* argv[]);
     
