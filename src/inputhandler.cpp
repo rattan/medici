@@ -1,27 +1,5 @@
 #include "inputhandler.h"
 
-#ifdef _WIN32
-LRESULT CALLBACK MyWndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
-{
-    if (Msg == WM_INPUT)
-    {
-        HRAWINPUT hRawInput = (HRAWINPUT)lParam;
-        RAWINPUT input = { 0 };
-        UINT size = sizeof(input);
-        GetRawInputData(hRawInput, RID_INPUT, &input, &size, sizeof(RAWINPUTHEADER));
-        switch (input.header.dwType) {
-        case RIM_TYPEKEYBOARD:
-            std::cout << input.data.keyboard.VKey << " " << input.data.keyboard.Flags << std::endl;
-            break;
-        case RIM_TYPEMOUSE:
-            std::cout << input.data.mouse.lLastX << " " << input.data.mouse.lLastY << " " << input.data.mouse.ulButtons << std::endl;
-            break;
-        }
-    }
-    return DefWindowProc(hWnd, Msg, wParam, lParam);
-}
-#endif
-
 #ifdef __APPLE__
 CGEventRef hook_event_proc(CGEventTapProxy tap_proxy, CGEventType type, CGEventRef event_ref, void *refcon) {
     std::cout<<"hook_event_proc"<<type<<std::endl;
@@ -33,11 +11,14 @@ static void hook_status_proc(CFRunLoopObserverRef observer, CFRunLoopActivity ac
 }
 #endif
 
-InputHandler::InputHandler() {
+InputHandler::InputHandler(std::function<void(KeyboardEvent)> keyEvent, std::function<void(MouseEvent)> mouseEvent):
+_keyEventListener(keyEvent),
+_mouseEventListener(mouseEvent) {
 #ifdef _WIN32
+    auto kkk = [](){};
     WNDCLASSEX wc = { };
     wc.cbSize = sizeof(WNDCLASSEX);
-    wc.lpfnWndProc = &MyWndProc;
+    wc.lpfnWndProc = DefWindowProc;
     wc.hInstance = GetModuleHandle(NULL);
     wc.lpszClassName = TEXT("Sample");
     if (!RegisterClassEx(&wc)) {
@@ -63,8 +44,23 @@ InputHandler::InputHandler() {
 
     MSG msg = {};
     while (GetMessage(&msg, NULL, 0, 0) > 0) {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
+        if (msg.message == WM_INPUT)
+        {
+            HRAWINPUT hRawInput = (HRAWINPUT)msg.lParam;
+            RAWINPUT input = { 0 };
+            UINT size = sizeof(input);
+            GetRawInputData(hRawInput, RID_INPUT, &input, &size, sizeof(RAWINPUTHEADER));
+            switch (input.header.dwType) {
+            case RIM_TYPEKEYBOARD:
+                this->_keyEventListener(KeyboardEvent(input.data.keyboard.VKey, input.data.keyboard.Flags));
+                //std::cout << input.data.keyboard.VKey << " " << input.data.keyboard.Flags << std::endl;
+                break;
+            case RIM_TYPEMOUSE:
+                this->_mouseEventListener(MouseEvent(Point(input.data.mouse.lLastY, input.data.mouse.lLastX), input.data.mouse.ulButtons));
+                //std::cout << input.data.mouse.lLastX << " " << input.data.mouse.lLastY << " " << input.data.mouse.ulButtons << std::endl;
+                break;
+            }
+        }
     }
 #endif
     

@@ -1,9 +1,16 @@
 #pragma once
 
-#inlcude "event.h"
+#include "event.h"
+#include "point.h"
 
-class MouseEvent: public Event {
+class MouseEvent : public Event {
 private:
-    int _moveY, _moveX;
-    int _button;
-}
+    const Point _moveXY{0,0};
+    const int _button;
+public:
+    MouseEvent(Point moveXY, int button);
+    const Point& moveXY() const;
+    const int moveX() const;
+    const int moveY() const;
+    const int button() const;
+};

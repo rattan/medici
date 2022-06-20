@@ -2,8 +2,12 @@
 
 #include "event.h"
 
-class KeyboardEvent: public Event {
+class KeyboardEvent : public Event {
 private:
-    int _key;
-    int _flag;
-}
+    const int _key;
+    const int _flag;
+public:
+    KeyboardEvent(int key, int flag);
+    int key() const;
+    int flag() const;
+};

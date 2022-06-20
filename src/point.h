@@ -11,5 +11,4 @@ public:
     
     void moveTo(int y, int x);
     unsigned int distance(const Point& other) const;
-    
 };

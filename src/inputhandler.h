@@ -13,9 +13,14 @@
 
 #include <iostream>
 #include <thread>
+#include <functional>
+
+#include "keyboardevent.h"
+#include "mouseevent.h"
 
 class InputHandler {
-
+    std::function<void(KeyboardEvent)> _keyEventListener;
+    std::function<void(MouseEvent)> _mouseEventListener;
 public:
-    InputHandler();
+    InputHandler(std::function<void(KeyboardEvent)> keyEvent, std::function<void(MouseEvent)> mouseEvent);
 };
