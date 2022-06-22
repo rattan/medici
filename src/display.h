@@ -11,6 +11,8 @@ class Display {
     bool _primary;
     bool _control;
     public:
+
     Display (const std::string &displayConfig);
+    Display (const Rect &r);
     std::string toString();
 };

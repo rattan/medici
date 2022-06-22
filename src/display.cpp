@@ -11,6 +11,8 @@ Display::Display (const std::string &displayConfig) {
     }
 }
 
+Display::Display(const Rect& r): displayRect(r) {}
+
 std::string Display::toString() {
     std::stringstream result;
     result<<displayRect.top()<<" "<<displayRect.left()<<" "<<displayRect.width()<<" "<<displayRect.height();

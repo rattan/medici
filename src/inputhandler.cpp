@@ -15,7 +15,6 @@ InputHandler::InputHandler(std::function<void(KeyboardEvent)> keyEvent, std::fun
 _keyEventListener(keyEvent),
 _mouseEventListener(mouseEvent) {
 #ifdef _WIN32
-    auto kkk = [](){};
     WNDCLASSEX wc = { };
     wc.cbSize = sizeof(WNDCLASSEX);
     wc.lpfnWndProc = DefWindowProc;
