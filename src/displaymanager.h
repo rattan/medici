@@ -10,20 +10,22 @@
 #include <iostream>
 
 #include "display.h"
+#include "uuid.h"
 // #include "config.h"
 
 class DisplayManager {
-    std::string _hostUuid;
+    const Uuid &_hostUuid;
     std::list<Display> _hostDisplays;
-    std::map<std::string, std::list<Display>> _otherDisplays;
+    std::map<Uuid, std::list<Display>> _otherDisplays;
 
 #ifdef _WIN32
     static BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData);
 #endif
 
     public:
+    DisplayManager();
     void updateHostDisplays();
-    void magnetDisplay(std::string uuid);
-    void addDisplays(std::string uuid, std::list<Display> displays);
-    void removeDisplays(std::string uuid);
+    void magnetDisplay(const Uuid &uuid);
+    void addDisplays(const Uuid &uuid, std::list<Display> displays);
+    void removeDisplays(const Uuid &uuid);
 };

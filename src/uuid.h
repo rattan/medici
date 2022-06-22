@@ -15,10 +15,22 @@ class Uuid {
     static std::string gen3();
     static std::string gen4();
     static std::string gen5();
+
+    unsigned long long _bitData[2]{0, 0};
+    std::string _strData;
+
     public:
     enum class version {
         NIL, ONE, TWO, THREE, FOUR, FIVE
     };
 
+
     static std::string gen(version ver = version::FOUR);
+    Uuid(const std::string &uuid);
+    bool operator==(const Uuid& other) const;
+    bool operator!=(const Uuid& other) const;
+    bool operator<(const Uuid& other) const;
+    bool operator<=(const Uuid& other) const;
+    bool operator>(const Uuid& other) const;
+    bool operator>=(const Uuid& other) const;
 };

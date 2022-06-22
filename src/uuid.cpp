@@ -56,3 +56,38 @@ std::string Uuid::gen(version ver) {
         return gen4();
     }
 }
+
+Uuid::Uuid(const std::string& uuid): _strData(uuid) {
+    int shift = 0;
+    auto ci = uuid.begin();
+    for (int i = 0; i < 2; ++i) {
+        for (int j = 0; j < 16; ++j) {
+            if (*ci == '-') {
+                ++ci;
+            }
+            this->_bitData[i] |= (unsigned long long)(*ci & 0xF) << (4 * j);
+        }
+    }
+}
+bool Uuid::operator==(const Uuid& other) const {
+    return this->_bitData[0] == other._bitData[0] && this->_bitData[1] == other._bitData[1];
+}
+bool Uuid::operator!=(const Uuid& other) const {
+    return !(*this == other);
+}
+
+bool Uuid::operator<(const Uuid& other) const {
+    return this->_bitData[0] == other._bitData[0] ? this->_bitData[1] < other._bitData[1] : this->_bitData[0] < other._bitData[0];
+}
+
+bool Uuid::operator<=(const Uuid& other) const {
+    return !(*this > other);
+}
+
+bool Uuid::operator>(const Uuid& other) const {
+    return this->_bitData[0] == other._bitData[0] ? this->_bitData[1] > other._bitData[1] : this->_bitData[0] > other._bitData[0];
+}
+
+bool Uuid::operator>=(const Uuid& other) const {
+    return !(*this < other);
+}

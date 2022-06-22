@@ -26,24 +26,26 @@ BOOL CALLBACK DisplayManager::MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor,
 }
 #endif
 
+
+DisplayManager::DisplayManager(): _hostUuid(Uuid::gen(Uuid::version::NIL)) {
+    this->updateHostDisplays();
+}
+
+
 void DisplayManager::updateHostDisplays() {
     // this->_hostUuid = Config::instance().uuid();
     this->_hostDisplays.clear();
     EnumDisplayMonitors(NULL, NULL, MonitorEnumProc, reinterpret_cast<LPARAM>(this));
-
-    for(auto d: this->_hostDisplays) {
-        std::cout<<d.toString()<<std::endl;
-    }
 }
 
-void DisplayManager::magnetDisplay(std::string uuid) {
+void DisplayManager::magnetDisplay(const Uuid& uuid) {
 
 }
 
-void DisplayManager::addDisplays(std::string uuid, std::list<Display> displays) {
+void DisplayManager::addDisplays(const Uuid& uuid, std::list<Display> displays) {
     this->_otherDisplays.insert_or_assign(uuid, displays);
 }
 
-void DisplayManager::removeDisplays(std::string uuid) {
+void DisplayManager::removeDisplays(const Uuid& uuid) {
     this->_otherDisplays.erase(uuid);
 }
