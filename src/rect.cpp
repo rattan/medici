@@ -31,6 +31,10 @@ int Rect::right() const {
     return left() + _width;
 }
 
+Point Rect::center() const {
+    return Point(left() + (width() >> 1), top() + (height() >> 1));
+}
+
 void Rect::moveTo(const Point &topLeft) {
     this->moveTo(topLeft.y(), topLeft.x());
 }
@@ -53,10 +57,14 @@ bool Rect::inside(int y, int x) const {
 }
 
 bool Rect::overlap(const Rect& other) const {
-    return inside(other.top(), other.left()) ||
-    inside(other.bottom(), other.left()) ||
-    inside(other.bottom(), other.right()) ||
-    inside(other.top(), other.right());
+    return this->inside(other.top(), other.left()) ||
+    this->inside(other.bottom(), other.left()) ||
+    this->inside(other.bottom(), other.right()) ||
+    this->inside(other.top(), other.right()) ||
+    other.inside(this->top(), this->left()) ||
+    other.inside(this->bottom(), this->left()) ||
+    other.inside(this->bottom(), this->right()) ||
+    other.inside(this->top(), this->right());
 }
 
 unsigned long long Rect::area() const {

@@ -27,6 +27,7 @@ public:
     int left() const;
     int bottom() const;
     int right() const;
+    Point center() const;
     
     void moveTo(int top, int left);
     void moveTo(const Point &topLeft);
