@@ -1,7 +1,9 @@
-#include <iostream>
-
-#include "argumenthandler.h"
+#include "log.h"
 
 int main(int argc, char* argv[]) {
-    ArgumentHandler handler(argc, argv);
+    Log::v("main", "-----   start medici process.   -----");
+    
+    
+    Log::v("main", "----- terminate medici process. -----");
+    return 0;
 }

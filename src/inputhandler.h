@@ -5,9 +5,9 @@
 #endif
 
 #ifdef __APPLE__
-#include <Carbon/Carbon.h>
-#include <CoreFoundation/CoreFoundation.h>
-#include <ApplicationServices/ApplicationServices.h>
+//#include <Carbon/Carbon.h>
+//#include <CoreFoundation/CoreFoundation.h>
+//#include <ApplicationServices/ApplicationServices.h>
 #endif
 
 

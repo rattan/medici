@@ -14,4 +14,5 @@ private:
     static void attach(const Rect& destination, Rect& target, int direction);
 public:
     static void magnetRect(const Rect& destination, Rect& target);
+    
 };
