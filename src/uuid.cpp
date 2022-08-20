@@ -1,18 +1,26 @@
 #include "uuid.h"
 
-std::string Uuid::genNil() {
-    return UUID_NIL;
+std::string Uuid::toString() const{
+    return this->_strData;
 }
-std::string Uuid::gen1() {
-    return UUID_NIL;
+
+std::string Uuid::tag() const {
+    return "UUID";
 }
-std::string Uuid::gen2() {
-    return UUID_NIL;
+
+Uuid Uuid::genNil() {
+    return Uuid(UUID_NIL);
 }
-std::string Uuid::gen3() {
-    return UUID_NIL;
+Uuid Uuid::gen1() {
+    return Uuid(UUID_NIL);
 }
-std::string Uuid::gen4() {
+Uuid Uuid::gen2() {
+    return Uuid(UUID_NIL);
+}
+Uuid Uuid::gen3() {
+    return Uuid(UUID_NIL);
+}
+Uuid Uuid::gen4() {
     static std::random_device rd;
     static std::mt19937 mt(rd());
     static std::uniform_int_distribution<int> dist(0, 15);
@@ -38,13 +46,13 @@ std::string Uuid::gen4() {
     for(int i=0;i<12;++i) {
         uuid4<<dist(mt);
     }
-    return uuid4.str();
+    return Uuid(uuid4.str());
 }
-std::string Uuid::gen5() {
-    return UUID_NIL;
+Uuid Uuid::gen5() {
+    return Uuid(UUID_NIL);
 }
 
-std::string Uuid::gen(version ver) {
+Uuid Uuid::gen(version ver) {
     switch(ver) {
         case version::NIL:
         case version::ONE:
@@ -58,8 +66,12 @@ std::string Uuid::gen(version ver) {
 }
 
 Uuid::Uuid(const std::string& uuid): _strData(uuid) {
+    if(!std::regex_match(uuid, std::regex(UUID_RE))) {
+        Uuid validUuid = Uuid::gen(version::FOUR);
+        this->_strData = validUuid._strData;
+    }
     int shift = 0;
-    auto ci = uuid.begin();
+    auto ci = this->_strData.begin();
     for (int i = 0; i < 2; ++i) {
         for (int j = 0; j < 16; ++j) {
             if (*ci == '-') {

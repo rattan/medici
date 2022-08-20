@@ -7,7 +7,7 @@
 #include <exception>
 #include <sstream>
 
-#include "config.h"
+#include "configmanager.h"
 #include "textutil.h"
 
 // keys

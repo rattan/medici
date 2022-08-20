@@ -22,11 +22,11 @@ void ArgumentHandler::parse() {
 }
 
 void ArgumentHandler::consumeConfig(std::list<std::string>::iterator &it) {
-    Config &c = Config::instance();
+    ConfigManager &c = ConfigManager::instance();
     if(it != this->_argv.end()) {
         switch(TextUtil::hash(it->c_str())) {
             case TextUtil::hash(KEY_NAME):
-                c.setName(*++it);
+                c.setHostName(*++it);
                 break;
             default:
                 throwInvalidArgument(it);
