@@ -13,6 +13,9 @@
 
 #define DEFAULT_CONFIG_FILE "m.config"
 
+namespace med {
+
+
 class ConfigManager {
 private:
     static const std::string TAG;
@@ -40,3 +43,5 @@ public:
     std::list<Config> connections() const;
     
 };
+
+}

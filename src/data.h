@@ -4,6 +4,6 @@
 
 class Data {
 public:
-    virtual std::string toString() const = 0;
-    virtual std::string tag() const = 0;
+    virtual const std::string toString() const = 0;
+    virtual const std::string tag() const = 0;
 };

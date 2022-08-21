@@ -3,6 +3,9 @@
 #include "event.h"
 #include "point.h"
 
+namespace med {
+
+
 class MouseEvent : public Event {
 private:
     const Point _moveXY{0,0};
@@ -14,3 +17,5 @@ public:
     const int moveY() const;
     const int button() const;
 };
+
+}

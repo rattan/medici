@@ -2,6 +2,9 @@
 
 #include "event.h"
 
+namespace med {
+
+
 class KeyboardEvent : public Event {
 private:
     const int _key;
@@ -11,3 +14,5 @@ public:
     int key() const;
     int flag() const;
 };
+
+}

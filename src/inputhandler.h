@@ -18,9 +18,14 @@
 #include "keyboardevent.h"
 #include "mouseevent.h"
 
+namespace med {
+
+
 class InputHandler {
     std::function<void(KeyboardEvent)> _keyEventListener;
     std::function<void(MouseEvent)> _mouseEventListener;
 public:
     InputHandler(std::function<void(KeyboardEvent)> keyEvent, std::function<void(MouseEvent)> mouseEvent);
 };
+
+}

@@ -16,6 +16,8 @@
 
 #define LOG_FILE "m.log"
 
+namespace med {
+
 class Log {
 private:
     static const std::string TAG;
@@ -62,3 +64,4 @@ public:
     }
 };
 
+}

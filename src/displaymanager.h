@@ -1,31 +1,30 @@
 #pragma once
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
 #include <list>
 #include <map>
 #include <string>
-#include <iostream>
+#include <functional>
 
 #include "display.h"
 #include "uuid.h"
 // #include "config.h"
 
+namespace med {
+
+
 class DisplayManager {
-    const Uuid &_hostUuid;
+protected:
+    static const std::string TAG;
+    
     std::list<Display> _hostDisplays;
-    std::map<Uuid, std::list<Display>> _otherDisplays;
+    std::list<std::function<void(std::list<Display>)>> _displayChangeListener;
+    
 
-#ifdef _WIN32
-    static BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData);
-#endif
-
-    public:
+public:
     DisplayManager();
-    void updateHostDisplays();
-    void magnetDisplay(const Uuid &uuid);
-    void addDisplays(const Uuid &uuid, std::list<Display> displays);
-    void removeDisplays(const Uuid &uuid);
+    const std::list<Display> getHostDisplays();
+    void addHostDisplayChangeListener(std::function<void(std::list<Display>)> &displayChangeListener);
+//    void removeHostDisplyaChangeListener(std::function<void(std::list<Display>)> &displayChangeListener);
 };
+
+}

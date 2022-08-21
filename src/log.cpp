@@ -1,5 +1,7 @@
 #include "log.h"
 
+namespace med {
+
 const std::string Log::TAG = "LOG";
 
 Log& Log::instance() {
@@ -81,4 +83,6 @@ void Log::logBufferConsumer()  {
         logInstance.fileBuffer.pop();
     }
     fout.close();
+}
+
 }

@@ -1,5 +1,8 @@
 #include "configmanager.h"
 
+namespace med {
+
+
 const std::string ConfigManager::TAG = "ConfigManager";
 
 ConfigManager::ConfigManager(){}
@@ -102,6 +105,21 @@ void ConfigManager::assign(Config* const target, const std::string &key, const s
     case TextUtil::hash(KEY_PROTOCOL_VERSION):
         target->_protocolVersion = std::stoi(value);
         break;
+    case TextUtil::hash(KEY_OPERATING_SYSTEM):
+        switch(TextUtil::hash(value.c_str())) {
+            case TextUtil::hash(OS_WINDOWS):
+                target->_operatingSystem = Config::OS::WINDOWS;
+                break;
+            case TextUtil::hash(OS_APPLE):
+                target->_operatingSystem = Config::OS::APPLE;
+                break;
+            case TextUtil::hash(OS_LINUX):
+                target->_operatingSystem = Config::OS::LINUX;
+                break;
+            default:
+                target->_operatingSystem = Config::OS::NIL;
+        }
+        break;
     case TextUtil::hash(KEY_NAME):
         target->_name = value;
         break;
@@ -138,4 +156,6 @@ std::list<Config> ConfigManager::connections() const {
     std::list<Config> result;
     std::transform(this->_connections.begin(), this->_connections.end(), std::back_inserter(result), [](const std::pair<Uuid, Config> &p){return p.second;});
     return result;
+}
+
 }

@@ -27,8 +27,8 @@ class Uuid: public Data{
         NIL, ONE, TWO, THREE, FOUR, FIVE
     };
     
-    virtual std::string toString() const;
-    virtual std::string tag() const;
+    virtual const std::string toString() const;
+    virtual const std::string tag() const;
 
     static Uuid gen(version ver = version::FOUR);
     Uuid(const std::string &uuid = "");

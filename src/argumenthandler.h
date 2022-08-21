@@ -15,6 +15,9 @@
 
 #define KEY_NAME "name"
 
+namespace med {
+
+
 class ArgumentHandler {
     std::list<std::string> _argv;
     void parse();
@@ -26,3 +29,5 @@ public:
     
     void printHelp();
 };
+
+}

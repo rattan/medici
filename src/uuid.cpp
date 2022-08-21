@@ -1,10 +1,10 @@
 #include "uuid.h"
 
-std::string Uuid::toString() const{
+const std::string Uuid::toString() const{
     return this->_strData;
 }
 
-std::string Uuid::tag() const {
+const std::string Uuid::tag() const {
     return "UUID";
 }
 

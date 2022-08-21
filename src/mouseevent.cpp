@@ -1,5 +1,8 @@
 #include "mouseevent.h"
 
+namespace med {
+
+
 MouseEvent::MouseEvent(Point moveXY, int button) :Event(Type::MOUSE), _moveXY(moveXY), _button(button) {}
 
 const Point& MouseEvent::moveXY() const {
@@ -13,4 +16,6 @@ const int MouseEvent::moveY() const {
 }
 const int MouseEvent::button() const {
     return this->_button;
+}
+
 }

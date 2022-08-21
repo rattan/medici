@@ -1,5 +1,8 @@
 #include "argumenthandler.h"
 
+namespace med {
+
+
 ArgumentHandler::ArgumentHandler(int argc, char *argv[]) {
     for(int i=0; i < argc; ++i) {
         this->_argv.push_back(argv[i]);
@@ -45,3 +48,4 @@ void ArgumentHandler::printHelp() {
     
 }
 
+}

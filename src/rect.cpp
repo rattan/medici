@@ -1,5 +1,7 @@
 #include "rect.h"
 
+namespace med {
+
 Rect::Rect():
 Rect(Point(0, 0), 0, 0) {}
 
@@ -69,4 +71,6 @@ bool Rect::overlap(const Rect& other) const {
 
 unsigned long long Rect::area() const {
     return _width * _height;
+}
+
 }

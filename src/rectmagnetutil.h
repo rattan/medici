@@ -4,6 +4,9 @@
 
 #include <cmath>
 
+namespace med {
+
+
 class RectMagnetUtil {
 private:
     static const int ATTACH_RIGHT_TO_LEFT = 1;
@@ -16,3 +19,5 @@ public:
     static void magnetRect(const Rect& destination, Rect& target);
     
 };
+
+}

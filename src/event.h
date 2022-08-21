@@ -1,5 +1,8 @@
 #pragma once
 
+namespace med {
+
+
 class Event {
 
 public:
@@ -12,3 +15,5 @@ protected:
     const Type _type;
     Event(Type type);
 };
+
+}

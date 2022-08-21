@@ -1,5 +1,8 @@
 #include "rectmagnetutil.h"
 
+namespace med {
+
+
 void RectMagnetUtil::magnetRect(const Rect &destination, Rect &target) {
     if(isAttached(destination, target)) return;
     
@@ -44,4 +47,6 @@ void RectMagnetUtil::attach(const Rect& destination, Rect& target, int direction
             target.moveTo(destination.bottom(), target.left());
             break;
     }
+}
+
 }

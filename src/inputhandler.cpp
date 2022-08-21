@@ -1,5 +1,8 @@
 #include "inputhandler.h"
 
+namespace med {
+
+
 #ifdef __APPLE__
 //CGEventRef hook_event_proc(CGEventTapProxy tap_proxy, CGEventType type, CGEventRef event_ref, void *refcon) {
 //    std::cout<<"hook_event_proc"<<type<<std::endl;
@@ -94,4 +97,6 @@ _mouseEventListener(mouseEvent) {
 //    CFRunLoopAddObserver(event_loop, hook->observer, kCFRunLoopDefaultMode);
 #endif
     
+}
+
 }

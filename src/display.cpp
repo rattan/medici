@@ -1,5 +1,7 @@
 #include "display.h"
 
+namespace med {
+
 Display::Display (const std::string &displayConfig) {
     std::regex displayConfigRe(R"((\d+) (\d+) (\d+) (\d+))");
     std::smatch match;
@@ -13,11 +15,17 @@ Display::Display (const std::string &displayConfig) {
 
 Display::Display(const Rect& r): displayRect(r) {}
 
-std::string Display::toString() {
+const std::string Display::toString() const{
     std::stringstream result;
     result<<displayRect.top()<<" "<<displayRect.left()<<" "<<displayRect.width()<<" "<<displayRect.height();
     if(this->_primary) {
         result<<" primary";
     }
     return result.str();
+}
+
+const std::string Display::tag() const {
+    return "Display";
+}
+
 }

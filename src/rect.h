@@ -13,6 +13,8 @@
 //       \----------/
 //           width
 
+namespace med {
+
 class Rect {
     Point _topLeft;
     unsigned int _width, _height;
@@ -37,3 +39,5 @@ public:
     bool overlap(const Rect& other) const;
     unsigned long long area() const;
 };
+
+}
