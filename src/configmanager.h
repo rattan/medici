@@ -10,6 +10,7 @@
 #include "config.h"
 #include "uuid.h"
 #include "log.h"
+#include "platformmanager.h"
 
 #define DEFAULT_CONFIG_FILE "m.config"
 
@@ -20,7 +21,7 @@ class ConfigManager {
 private:
     static const std::string TAG;
     bool loaded = false;
-    Config _config;
+    Config _hostConfig;
     std::map<Uuid, Config> _connections;
     
     
@@ -31,6 +32,8 @@ private:
     void load(const std::string from = DEFAULT_CONFIG_FILE);
     void assign(Config* const target, const std::string &key, const std::string &value);
     void parse(const std::list<std::string> &configLines);
+    void validateHostConfig();
+    
     std::string toString() const;
     
     

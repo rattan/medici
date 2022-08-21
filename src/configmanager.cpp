@@ -19,7 +19,7 @@ ConfigManager& ConfigManager::instance() {
 std::string ConfigManager::toString() const{
     std::stringstream stringBuilder;
     stringBuilder<<"HOST:"<<std::endl;
-    stringBuilder<<_config.toString();
+    stringBuilder<<_hostConfig.toString();
     for(auto& connection: connections()) {
         stringBuilder<<"CONNECTION:"<<std::endl;
         stringBuilder<<connection.toString();
@@ -47,16 +47,19 @@ void ConfigManager::load(const std::string from)
     }
     fin.close();
     if(configList.empty()) {
-        _config.initDefaultHost();
+        _hostConfig.initDefaultHost();
     } else {
         parse(configList);
     }
+    
+    this->validateHostConfig();
+    
 }
 
 void ConfigManager::parse(const std::list<std::string> &configLines)
 {
     Config other;
-    Config *target = &_config;
+    Config *target = &_hostConfig;
     
     for (auto& line : configLines)
     {
@@ -68,7 +71,7 @@ void ConfigManager::parse(const std::list<std::string> &configLines)
             switch (TextUtil::hash(line.c_str()))
             {
             case TextUtil::hash("HOST:"):
-                    target = &_config;
+                    target = &_hostConfig;
                     target->initDefaultHost();
                 break;
             case TextUtil::hash("CONNECTION:"):
@@ -90,8 +93,35 @@ void ConfigManager::parse(const std::list<std::string> &configLines)
             assign(target, match[2].str(), match[3].str());
         }
     }
-    if(target == &other) {
+    if (target == &other) {
         this->_connections.insert(std::pair<Uuid, Config>(target->uuid(), *target));
+    }
+}
+
+void ConfigManager::validateHostConfig() {
+    Config current;
+    current.initDefaultHost();
+    
+    if (this->_hostConfig.operatingSystem() != current.operatingSystem()) {
+        this->_hostConfig._operatingSystem = current._operatingSystem;
+    }
+    if (this->_hostConfig.ipAddress() != current.ipAddress()) {
+        this->_hostConfig._ipAddress = current.ipAddress();
+    }
+    const std::list<Display> &currentDisplays = current.displays();
+    if (this->_hostConfig.displays().size() != currentDisplays.size()) {
+        this->_hostConfig._displays = currentDisplays;
+    } else {
+        auto hostIt = this->_hostConfig.displays().begin();
+        auto currentIt = current.displays().begin();
+        while(hostIt != this->hostConfig().displays().end() && currentIt != current.displays().end()) {
+            if(hostIt->toString() != currentIt->toString()) {
+                this->_hostConfig._displays = currentDisplays;
+                break;
+            }
+            ++hostIt;
+            ++currentIt;
+        }
     }
 }
 
@@ -108,16 +138,16 @@ void ConfigManager::assign(Config* const target, const std::string &key, const s
     case TextUtil::hash(KEY_OPERATING_SYSTEM):
         switch(TextUtil::hash(value.c_str())) {
             case TextUtil::hash(OS_WINDOWS):
-                target->_operatingSystem = Config::OS::WINDOWS;
+                target->_operatingSystem = PlatformManager::OS::WINDOWS;
                 break;
             case TextUtil::hash(OS_APPLE):
-                target->_operatingSystem = Config::OS::APPLE;
+                target->_operatingSystem = PlatformManager::OS::APPLE;
                 break;
             case TextUtil::hash(OS_LINUX):
-                target->_operatingSystem = Config::OS::LINUX;
+                target->_operatingSystem = PlatformManager::OS::LINUX;
                 break;
             default:
-                target->_operatingSystem = Config::OS::NIL;
+                target->_operatingSystem = PlatformManager::OS::NIL;
         }
         break;
     case TextUtil::hash(KEY_NAME):
@@ -147,10 +177,10 @@ void ConfigManager::save(const std::string to) const
 }
 
 void ConfigManager::setHostName(const std::string& name) {
-    this->_config._name = name;
+    this->_hostConfig._name = name;
 }
 const Config& ConfigManager::hostConfig() const {
-    return this->_config;
+    return this->_hostConfig;
 }
 std::list<Config> ConfigManager::connections() const {
     std::list<Config> result;

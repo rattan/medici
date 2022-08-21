@@ -5,18 +5,17 @@ namespace med {
 
 const std::string DisplayManagerFactory::TAG = "DisplayManagerFactory";
 
-DisplayManager& DisplayManagerFactory::create() {
+DisplayManager& DisplayManagerFactory::instance() {
     static DisplayManager* i = nullptr;
     if(i == nullptr) {
-        const Config &config = ConfigManager::instance().hostConfig();
-        switch(config.operatingSystem()) {
-            case Config::OS::WINDOWS:
+        switch(PlatformManager::getHostOperatingSystem()) {
+            case PlatformManager::OS::WINDOWS:
                 i = new DisplayManagerWindows();
                 break;
-            case Config::OS::LINUX:
+            case PlatformManager::OS::LINUX:
                 i = new DisplayManagerLinux();
                 break;
-            case Config::OS::APPLE:
+            case PlatformManager::OS::APPLE:
                 i = new DisplayManagerApple();
                 break;
             default:

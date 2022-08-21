@@ -12,13 +12,11 @@ void DisplayManagerApple::updateHostDisplay() {
 #ifdef __APPLE__
     CGDirectDisplayID *onlineDisplays = new CGDirectDisplayID[99];
     uint32_t displayCount = 0;
-    
     CGGetOnlineDisplayList(99, onlineDisplays, &displayCount);
-    for(int i=0;i< displayCount;++i) {
+    this->_hostDisplays.clear();
+    for(int i = 0; i < displayCount; ++i) {
         CGRect monitor = CGDisplayBounds(onlineDisplays[i]);
-        CGFloat height = CGRectGetHeight(monitor);
-        CGFloat width = CGRectGetWidth(monitor);
-        Log::i(TAG, std::string("w ").append(std::to_string(width)).append(" h ").append(std::to_string(height)));
+        this->_hostDisplays.push_back(Display(Rect(monitor.origin.y, monitor.origin.x, monitor.size.width, monitor.size.height)));
     }
 #endif
 }

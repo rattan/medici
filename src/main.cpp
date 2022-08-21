@@ -7,7 +7,7 @@ using namespace med;
 int main(int argc, char* argv[]) {
     Log::v("main", "-----   start medici process.   -----");
     ConfigManager& configManager = ConfigManager::instance();
-    DisplayManagerFactory::create();
+    DisplayManagerFactory::instance();
     
     configManager.save();
     Log::v("main", "----- terminate medici process. -----");

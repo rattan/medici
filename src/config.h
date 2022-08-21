@@ -6,6 +6,8 @@
 #include "textutil.h"
 #include "tcpsocket.h"
 #include "log.h"
+#include "displaymanagerfactory.h"
+#include "platformmanager.h"
 
 #include <fstream>
 #include <string>
@@ -29,29 +31,15 @@
 // default values
 #define DEFAULT_APP_VERSION 0
 #define DEFAULT_PROTOCOL_VERSION 0
-#define OS_NIL "NIL"
-#define OS_APPLE "APPLE"
-#define OS_LINUX "LINUX"
-#define OS_WINDOWS "WINDOWS"
-
-
 
 namespace med {
 
-
-
 class Config: public Data {
-public:
-    enum class OS: int {
-        NIL = 0, APPLE, LINUX, WINDOWS
-    };
-    static const char *_osString[];
-
 private:
     friend class ConfigManager;
     int _appVersion = DEFAULT_APP_VERSION;
     int _protocolVersion = DEFAULT_PROTOCOL_VERSION;
-    OS _operatingSystem = OS::NIL;
+    PlatformManager::OS _operatingSystem = PlatformManager::OS::NIL;
     std::string _name;
     Uuid _uuid;
     std::string _ipAddress;
@@ -71,8 +59,7 @@ public:
     
     int appVersion() const;
     int protocolVersion() const;
-    OS operatingSystem() const;
-    std::string osToString() const;
+    PlatformManager::OS operatingSystem() const;
     std::string name() const;
     Uuid uuid() const;
     std::string ipAddress() const;
