@@ -1,5 +1,7 @@
 #include "tcpsocket.h"
 
+namespace med {
+
 #ifdef _WIN32
 
 bool WSInitializer::init = false;
@@ -132,4 +134,6 @@ std::string TcpSocket::hostIp() {
 #endif
 
     return std::string(ip);
+}
+
 }

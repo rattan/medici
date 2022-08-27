@@ -1,6 +1,10 @@
 #include "tcpclient.h"
 
-TcpSocket TcpClient::connect(const char* ipAddress, u_short port) {
+namespace med {
+
+const std::string TcpClient::TAG = "TcpClient";
+
+TcpSocket TcpClient::connect(const std::string ipAddress, u_short port) {
     SOCKET clientSocket = INVALID_SOCKET;
 #ifdef _WIN32
     static WSInitializer initializer;
@@ -12,7 +16,7 @@ TcpSocket TcpClient::connect(const char* ipAddress, u_short port) {
 
     char portStr[6]{ 0 };
     _itoa_s(port, portStr, 10);
-    int iRes = getaddrinfo(ipAddress, portStr, &hints, &result);
+    int iRes = getaddrinfo(ipAddress.c_str(), portStr, &hints, &result);
     if(iRes != 0) {
         throw std::runtime_error("getaddrinfo fail.");
     }
@@ -43,7 +47,7 @@ TcpSocket TcpClient::connect(const char* ipAddress, u_short port) {
     SOCKADDR_IN serverAddr;
     memset(&serverAddr, 0, sizeof(serverAddr));
     serverAddr.sin_family = AF_INET;
-    serverAddr.sin_addr.s_addr = inet_addr(ipAddress);
+    serverAddr.sin_addr.s_addr = inet_addr(ipAddress.c_str());
     serverAddr.sin_port = htons(port);
     int connectResult = sock_connect(clientSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr));
     if (SOCKET_ERROR == connectResult) {
@@ -51,6 +55,8 @@ TcpSocket TcpClient::connect(const char* ipAddress, u_short port) {
     }
 #endif
 
-    std::cout << "Connect to server " << ipAddress << "[" << port << "]" << std::endl;
+    Log::i(TAG, "Connect to server " + ipAddress + "[" + std::to_string(port) + "]");
     return TcpSocket(clientSocket);
+}
+
 }

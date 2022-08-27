@@ -69,6 +69,10 @@ int(*const sock_receive)(SOCKET, char*, int, int) = recv;
 
 
 #define DEFAULT_BUFFER_SIZE 1024
+#define BROADCAST_PORT 46470
+#define CONNECTION_PORT 46471
+
+namespace med {
 
 class TcpSocket {
     friend class TcpClient;
@@ -93,3 +97,5 @@ public:
     static std::string hostName();
     static std::string hostIp();
 };
+
+}

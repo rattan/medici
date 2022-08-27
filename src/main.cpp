@@ -1,15 +1,9 @@
-#include "log.h"
-#include "configmanager.h"
-#include "displaymanagerfactory.h"
+#include "application.h"
 
-using namespace med;
+// medici process start position.
+// program will run in Application class.
 
 int main(int argc, char* argv[]) {
-    Log::v("main", "-----   start medici process.   -----");
-    ConfigManager& configManager = ConfigManager::instance();
-    DisplayManagerFactory::instance();
-    
-    configManager.save();
-    Log::v("main", "----- terminate medici process. -----");
-    return 0;
+    med::Application app(argc, argv);
+    return app.exec();
 }

@@ -1,5 +1,7 @@
 #include "tcpserver.h"
 
+namespace med {
+
 TcpServer::~TcpServer() {
     //if (this->listenThread) {
     //    this->listenThread->join();
@@ -79,6 +81,10 @@ void TcpServer::listen(u_short port, const std::function<void(const TcpSocket)> 
     });
 }
 
+bool TcpServer::isListening() {
+    return this->listenSocket != INVALID_SOCKET;
+}
+
 void TcpServer::close() {
     if (this->listenSocket != INVALID_SOCKET) {
         #ifdef _WIN32
@@ -91,4 +97,6 @@ void TcpServer::close() {
     } else {
         throw std::runtime_error("Listen socket already closed.");
     }
+}
+
 }

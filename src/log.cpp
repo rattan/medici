@@ -16,7 +16,7 @@ Log::Log() {
 }
 
 Log::~Log() {
-    v(TAG, "Logger terminated.");
+    i(TAG, "Logger terminated.");
     this->consumeBuffer = false;
     this->consumeThread.join();
 }
@@ -57,7 +57,7 @@ void Log::printLog(Log::Level lv, std::string tag, std::string message)  {
 }
 
 void Log::logBufferConsumer()  {
-    v(TAG, "Logger start.");
+//    v(TAG, "Logger start.");
     std::ofstream fout;
     Log& logInstance = instance();
     fout.open(LOG_FILE, std::ios_base::app);

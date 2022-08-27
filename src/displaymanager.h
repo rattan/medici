@@ -14,14 +14,16 @@ namespace med {
 
 class DisplayManager {
 protected:
+    friend class DisplayManagerFactory;
     static const std::string TAG;
     
     std::list<Display> _hostDisplays;
     std::list<std::function<void(std::list<Display>)>> _displayChangeListener;
+    DisplayManager();
     
 
 public:
-    DisplayManager();
+
     const std::list<Display> getHostDisplays();
     void addHostDisplayChangeListener(std::function<void(std::list<Display>)> &displayChangeListener);
 //    void removeHostDisplyaChangeListener(std::function<void(std::list<Display>)> &displayChangeListener);

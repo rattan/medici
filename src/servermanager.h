@@ -1,15 +1,16 @@
 #pragma once
 
 #include "tcpserver.h"
+#include "log.h"
 
+#include <string>
 #include <list>
 
-#define BROADCAST_PORT 46470
-#define CONNECTION_PORT 46471
-
+namespace med {
 
 class ServerManager {
 private:
+    static const std::string TAG;
     TcpServer broadcastServer;
     std::list<TcpSocket> broadCastSocket;
     TcpServer mediciConnectionServer;
@@ -18,10 +19,10 @@ private:
     
     
 public:
-    
-    void startBroadcasting();
-    void stopBroadCasting();
-    
-    
-    
+    void startMediciConnectionServer();
+    void stopMediciConnectionServer();
+    void startBroadcastingServer();
+    void stopBroadCastingServer();
 };
+
+}

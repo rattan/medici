@@ -34,6 +34,10 @@ private:
     void parse(const std::list<std::string> &configLines);
     void validateHostConfig();
     
+    
+    const Config& getDefaultConfig() const;
+    const Config getDefaultHostConfig() const;
+    
     std::string toString() const;
     
     

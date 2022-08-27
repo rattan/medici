@@ -44,15 +44,14 @@ private:
     Uuid _uuid;
     std::string _ipAddress;
     std::list<Display> _displays;
-    
-    Config();
-    
+
+    Config(int appVersion = DEFAULT_APP_VERSION, int protocolVersion = DEFAULT_PROTOCOL_VERSION,
+           PlatformManager::OS operatingSystem = PlatformManager::OS::NIL, std::string name = "",
+           Uuid uuid = Uuid::gen(Uuid::version::FOUR), std::string ipAddress = "0.0.0.0",
+           std::list<Display> displays = std::list<Display>());
     void clear();
-    void initDefaultHost();
-    void initDefaultData();
 
 public:
-    static Config& instance();
     
     virtual const std::string toString() const;
     virtual const std::string tag() const;

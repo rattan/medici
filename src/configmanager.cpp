@@ -27,6 +27,21 @@ std::string ConfigManager::toString() const{
     return stringBuilder.str();
 }
 
+const Config& ConfigManager::getDefaultConfig() const{
+    static Config defaultConfig;
+    return defaultConfig;
+}
+
+const Config ConfigManager::getDefaultHostConfig() const{
+    Config hostDefaultConfig(DEFAULT_APP_VERSION, DEFAULT_PROTOCOL_VERSION, PlatformManager::getHostOperatingSystem(),
+                             TcpSocket::hostName(), Uuid::gen(Uuid::version::FOUR), TcpSocket::hostIp(),
+                             DisplayManagerFactory::instance().getHostDisplays());
+    if(hostDefaultConfig.operatingSystem() == PlatformManager::OS::NIL) {
+        Log::e(TAG, "This operating system not support medici.");
+    }
+    return hostDefaultConfig;
+}
+
 void ConfigManager::load(const std::string from)
 {
     std::ifstream fin;
@@ -47,13 +62,13 @@ void ConfigManager::load(const std::string from)
     }
     fin.close();
     if(configList.empty()) {
-        _hostConfig.initDefaultHost();
+        _hostConfig = getDefaultHostConfig();
     } else {
         parse(configList);
     }
     
     this->validateHostConfig();
-    
+    Log::i(TAG, std::string("New config loaded. Host configuration: ").append(hostConfig().toString()));
 }
 
 void ConfigManager::parse(const std::list<std::string> &configLines)
@@ -72,7 +87,7 @@ void ConfigManager::parse(const std::list<std::string> &configLines)
             {
             case TextUtil::hash("HOST:"):
                     target = &_hostConfig;
-                    target->initDefaultHost();
+                    *target = getDefaultHostConfig();
                 break;
             case TextUtil::hash("CONNECTION:"):
                 target = &other;
@@ -99,8 +114,7 @@ void ConfigManager::parse(const std::list<std::string> &configLines)
 }
 
 void ConfigManager::validateHostConfig() {
-    Config current;
-    current.initDefaultHost();
+    Config current = getDefaultHostConfig();
     
     if (this->_hostConfig.operatingSystem() != current.operatingSystem()) {
         this->_hostConfig._operatingSystem = current._operatingSystem;

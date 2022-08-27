@@ -2,37 +2,13 @@
 
 namespace med {
 
-
-Config::Config() {
-}
+Config::Config(int appVersion, int protocolVersion, PlatformManager::OS operatingSystem, std::string name,
+                   Uuid uuid, std::string ipAddress, std::list<Display> displays):
+    _appVersion(appVersion), _protocolVersion(protocolVersion), _operatingSystem(operatingSystem), _name(name),
+    _uuid(uuid), _ipAddress(ipAddress), _displays(displays) {}
 
 void Config::clear() {
-    _appVersion = DEFAULT_APP_VERSION;
-    _protocolVersion = DEFAULT_PROTOCOL_VERSION;
-    _name.clear();
-    _uuid = Uuid::gen(Uuid::version::NIL);
-    _ipAddress.clear();
-    _displays.clear();
-}
-
-void Config::initDefaultHost() {
-    this->_operatingSystem = PlatformManager::getHostOperatingSystem();
-    if(this->_operatingSystem == PlatformManager::OS::NIL) {
-        Log::e(tag(), "Ths operating system not support medici.");
-    }
-
-    this->_name = TcpSocket::hostName();
-    this->_uuid = Uuid::gen(Uuid::version::FOUR);
-    this->_ipAddress = TcpSocket::hostIp();
-    this->_displays = DisplayManagerFactory::instance().getHostDisplays();
-}
-
-void Config::initDefaultData() {
-    this->_operatingSystem = PlatformManager::OS::NIL;
-    this->_name.clear();
-    this->_uuid = Uuid::gen(Uuid::version::FOUR);
-    this->_ipAddress = "0.0.0.0";
-    this->_displays.clear();
+    new (this)Config();
 }
 
 const std::string Config::toString() const {
