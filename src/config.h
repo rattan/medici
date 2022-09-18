@@ -40,8 +40,8 @@ private:
     int _appVersion = DEFAULT_APP_VERSION;
     int _protocolVersion = DEFAULT_PROTOCOL_VERSION;
     PlatformManager::OS _operatingSystem = PlatformManager::OS::NIL;
-    std::string _name;
     Uuid _uuid;
+    std::string _name;
     std::string _ipAddress;
     std::list<Display> _displays;
 
