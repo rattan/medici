@@ -7,7 +7,7 @@ namespace med {
 
 class DisplayManagerLinux: public DisplayManager {
 private:
-    friend class DisplayManagerFactory;
+    friend class DependencySet;
 };
 
 }

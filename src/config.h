@@ -6,7 +6,7 @@
 #include "textutil.h"
 #include "tcpsocket.h"
 #include "log.h"
-#include "displaymanagerfactory.h"
+#include "dependencyset.h"
 #include "platformmanager.h"
 
 #include <fstream>

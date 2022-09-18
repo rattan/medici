@@ -2,6 +2,8 @@
 
 #include <string>
 
+
+#include "dependencyset.h"
 #include "servermanager.h"
 #include "connectionmanager.h"
 #include "configmanager.h"
@@ -19,9 +21,6 @@ class Application {
     int argumentCount = 0;
     char** argumentValue = nullptr;
     bool executing = false;
-    
-    ServerManager serverManager;
-    ConnectionManager connectionManager;
     
 public:
     Application(int argc, char* argv[]);

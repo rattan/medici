@@ -10,6 +10,7 @@
 #include "config.h"
 #include "uuid.h"
 #include "log.h"
+#include "dependencyset.h"
 #include "platformmanager.h"
 
 #define DEFAULT_CONFIG_FILE "m.config"

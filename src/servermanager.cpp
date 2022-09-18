@@ -6,7 +6,8 @@ const std::string ServerManager::TAG = "ServerManager";
 
 void ServerManager::startMediciConnectionServer() {
     if(!mediciConnectionServer.isListening()) {
-        mediciConnectionServer.listen(CONNECTION_PORT, [&](TcpSocket) {
+        mediciConnectionServer.listen(CONNECTION_PORT, [&](TcpSocket socket) {
+//            this->mediciConnectionServer.push_back
             
         });
         Log::i(TAG, "MediciConnection server listen start");
@@ -24,7 +25,6 @@ void ServerManager::stopMediciConnectionServer() {
 void ServerManager::startBroadcastingServer() {
     if(!broadcastServer.isListening()) {
         broadcastServer.listen(BROADCAST_PORT, [&](TcpSocket socket){
-            this->broadCastSocket.push_back(std::move(socket));
         });
         Log::i(TAG, "Broadcast server listen start");
     } else {

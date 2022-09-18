@@ -11,7 +11,7 @@ namespace med {
 
 class DisplayManagerWindows: public DisplayManager {
 private:
-    friend class DisplayManagerFactory;
+    friend class DependencySet;
     DisplayManagerWindows();
     #ifdef _WIN32
         static BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData);

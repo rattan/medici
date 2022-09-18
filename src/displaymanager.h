@@ -14,7 +14,7 @@ namespace med {
 
 class DisplayManager {
 protected:
-    friend class DisplayManagerFactory;
+    friend class DependencySet;
     static const std::string TAG;
     
     std::list<Display> _hostDisplays;

@@ -14,7 +14,7 @@ namespace med {
 
 class DisplayManagerApple: public DisplayManager {
 private:
-    friend class DisplayManagerFactory;
+    friend class DependencySet;
     DisplayManagerApple();
     void updateHostDisplay();
 };

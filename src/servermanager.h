@@ -2,6 +2,7 @@
 
 #include "tcpserver.h"
 #include "log.h"
+#include "dependencyset.h"
 
 #include <string>
 #include <list>
@@ -12,11 +13,7 @@ class ServerManager {
 private:
     static const std::string TAG;
     TcpServer broadcastServer;
-    std::list<TcpSocket> broadCastSocket;
     TcpServer mediciConnectionServer;
-    std::list<TcpSocket> connectedSocket;
-    
-    
     
 public:
     void startMediciConnectionServer();

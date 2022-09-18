@@ -5,11 +5,36 @@ namespace med {
 const std::string ConnectionManager::TAG = "ConnectionManager";
 
 void ConnectionManager::addConnection(Uuid uuid, TcpSocket socket) {
+    if(this->connections.find(uuid) != this->connections.end()) {
+        std::stringstream logStream;
+        logStream<<uuid.toString()<<" already contains connections.";
+        Log::w(TAG, logStream.str());
+    }
+    if(this->broadCastConnections.find(uuid) != this->broadCastConnections.end()) {
+        std::stringstream logStream;
+        logStream<<uuid.toString()<<" contains broadcast connections. move to connections";
+        Log::i(TAG, logStream.str());
+        removeBroadCastConnection(uuid);
+        this->broadCastConnections.erase(uuid);
+    }
     this->connections.insert(std::pair<Uuid, TcpSocket>(uuid, std::move(socket)));
 }
 
 void ConnectionManager::removeConnection(Uuid uuid) {
     this->connections.erase(uuid);
+}
+
+void ConnectionManager::addBroadCastConnection(Uuid uuid, TcpSocket socket) {
+    if(this->broadCastConnections.find(uuid) != this->broadCastConnections.end()) {
+        std::stringstream logStream;
+        logStream<<uuid.toString()<<" already contains broadcast connections.";
+        Log::i(TAG, logStream.str());
+    }
+    this->broadCastConnections.insert(std::pair<Uuid, TcpSocket>(uuid, std::move(socket)));
+}
+
+void ConnectionManager::removeBroadCastConnection(Uuid uuid) {
+    this->broadCastConnections.erase(uuid);
 }
 
 void ConnectionManager::connectToConfigConnection() {

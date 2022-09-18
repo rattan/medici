@@ -35,7 +35,7 @@ const Config& ConfigManager::getDefaultConfig() const{
 const Config ConfigManager::getDefaultHostConfig() const{
     Config hostDefaultConfig(DEFAULT_APP_VERSION, DEFAULT_PROTOCOL_VERSION, PlatformManager::getHostOperatingSystem(),
                              TcpSocket::hostName(), Uuid::gen(Uuid::version::FOUR), TcpSocket::hostIp(),
-                             DisplayManagerFactory::instance().getHostDisplays());
+                             DependencySet::getDisplayManager().getHostDisplays());
     if(hostDefaultConfig.operatingSystem() == PlatformManager::OS::NIL) {
         Log::e(TAG, "This operating system not support medici.");
     }

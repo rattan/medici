@@ -17,7 +17,7 @@ Application::~Application() {
     if(instanceCount == 0) {
         ConfigManager::instance().save();
     }
-    
+    auto &serverManager = DependencySet::getServerManager();
     serverManager.stopBroadCastingServer();
     serverManager.stopMediciConnectionServer();
     
@@ -32,13 +32,11 @@ int Application::exec() {
     executing = true;
     Log::i(TAG, "-----   start medici application.   -----");
     
+    auto &serverManager = DependencySet::getServerManager();
+    auto &connectionManager = DependencySet::getConnectionManager();
     connectionManager.connectToConfigConnection();
     serverManager.startMediciConnectionServer();
     serverManager.startBroadcastingServer();
-    
-    
-    
     return 0;
 }
-
 }
