@@ -37,18 +37,18 @@ void ConnectionManager::removeBroadCastConnection(Uuid uuid) {
     this->broadCastConnections.erase(uuid);
 }
 
-void ConnectionManager::connectToConfigConnection() {
-    for(const auto& connect: ConfigManager::instance().connections()) {
-        if(this->connections.find(connect.uuid()) == this->connections.end()) {
-            Log::i(TAG, "try to connect to " + connect.ipAddress());
-            TcpClient connectClient;
-            try {
-                addConnection(connect.uuid(), connectClient.connect(connect.ipAddress(), CONNECTION_PORT));
-            } catch (std::runtime_error e) {
-                Log::e(TAG, "can not connect to " + connect.ipAddress());
-            }
-        }
-    }
-}
+// void ConnectionManager::connectToConfigConnection() {
+//     for(const auto& connect: ConfigManager::instance().connections()) {
+//         if(this->connections.find(connect.uuid()) == this->connections.end()) {
+//             Log::i(TAG, "try to connect to " + connect.ipAddress());
+//             TcpClient connectClient;
+//             try {
+//                 addConnection(connect.uuid(), connectClient.connect(connect.ipAddress(), CONNECTION_PORT));
+//             } catch (std::runtime_error e) {
+//                 Log::e(TAG, "can not connect to " + connect.ipAddress());
+//             }
+//         }
+//     }
+// }
 
 }

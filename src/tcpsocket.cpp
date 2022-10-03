@@ -3,7 +3,6 @@
 namespace med {
 
 #ifdef _WIN32
-
 bool WSInitializer::init = false;
 WSInitializer::WSInitializer() {
     if (this->init == false) {
@@ -24,7 +23,6 @@ WSInitializer::~WSInitializer() {
         this->init = false;
     }
 }
-
 #endif
 
 TcpSocket::ReceiveRunner::ReceiveRunner(TcpSocket* owner): _owner(owner) {}
@@ -34,7 +32,7 @@ void TcpSocket::ReceiveRunner::run() {
         int bufSize = DEFAULT_BUFFER_SIZE;
         char* buffer = new char[bufSize];
         while (_owner->_socket != INVALID_SOCKET) {
-            int receivedSize = sock_receive(_owner->_socket, buffer, bufSize, 0);
+            int receivedSize = ::recv(_owner->_socket, buffer, bufSize, 0);
             if (receivedSize != SOCKET_ERROR) {
                 _owner->receiveListener(buffer, receivedSize);
                 if (receivedSize == bufSize && bufSize < INT_MAX) {
@@ -86,7 +84,7 @@ void TcpSocket::setOnReceiveListener(const std::function<void(char*, int)> &list
 
 void TcpSocket::send(const char* buffer, int size) const {
     if(_socket != INVALID_SOCKET) {
-        sock_send(_socket, buffer, size, 0);
+        ::send(_socket, buffer, size, 0);
     } else {
         throw std::runtime_error("Can't send. TcpSocket not avaliable.");
     }
@@ -122,17 +120,16 @@ std::string TcpSocket::hostIp() {
 #endif
     char host[256]{ 0 };
     int hostname = gethostname(host, sizeof(host));
-#ifdef _WIN32
-    struct addrinfo* servinfo;
-    getaddrinfo(host, nullptr, nullptr, &servinfo);
-    char ip[256]{ 0 };
-    inet_ntop(AF_INET, servinfo, ip, sizeof(ip));
-#endif
-#if defined __APPLE__ || defined __linux__
+// #ifdef _WIN32
+//     struct addrinfo* servinfo;
+//     getaddrinfo(host, nullptr, nullptr, &servinfo);
+//     char ip[256]{ 0 };
+//     inet_ntoa(AF_INET, servinfo, ip, sizeof(ip));
+// #endif
+// #if defined __APPLE__ || defined __linux__
     struct hostent* host_entry = gethostbyname(host);
     char* ip = inet_ntoa(*((struct in_addr*)host_entry->h_addr_list[0])); //Convert into IP string
-#endif
-
+// #endif
     return std::string(ip);
 }
 

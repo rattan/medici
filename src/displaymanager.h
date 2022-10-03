@@ -27,6 +27,7 @@ public:
     const std::list<Display> getHostDisplays();
     void addHostDisplayChangeListener(std::function<void(std::list<Display>)> &displayChangeListener);
 //    void removeHostDisplyaChangeListener(std::function<void(std::list<Display>)> &displayChangeListener);
+    void addHostDisplay(Display display);
 };
 
 }

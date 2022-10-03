@@ -11,7 +11,9 @@
 #include <queue>
 
 #include <unistd.h>
-#include <sys/syscall.h>
+
+// #include <sys/syscall.h>
+#include <cctype>
 #include <sys/types.h>
 
 #define LOG_FILE "m.log"
@@ -26,7 +28,7 @@ private:
     ~Log();
     
     enum class Level {
-        VERBOSE = 0, DEBUGG = 1, INFO = 2, WARN = 3, ERROR = 4
+        VERBOSE = 0, DEBUGG = 1, INFO = 2, WARN = 3, _ERROR = 4
     } logLevel;
     std::queue<std::string> printBuffer;
     std::queue<std::string> fileBuffer;
@@ -53,7 +55,7 @@ public:
         instance().printLog(Level::WARN, tag, message);
     }
     static void e(std::string tag, std::string message) {
-        instance().printLog(Level::ERROR, tag, message);
+        instance().printLog(Level::_ERROR, tag, message);
     }
     
     static void setLegLevel(Level level) {

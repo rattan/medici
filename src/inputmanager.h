@@ -3,7 +3,7 @@
 #include <string>
 #include <thread>
 #include <functional>
-#include <set>
+#include <vector>
 
 #include "log.h"
 #include "keyboardevent.h"
@@ -12,11 +12,15 @@
 namespace med {
 
 class InputManager {
-    static const std::string TAG;
-    std::set<std::function<void(KeyboardEvent)>> _keyEventListener;
-    std::set<std::function<void(MouseEvent)>> _mouseEventListener;
+
+    std::vector<std::function<void(KeyboardEvent)>> _keyEventListener;
+    std::vector<std::function<void(MouseEvent)>> _mouseEventListener;
     
+    void startInternal();
+    void stopInternal();
+
 protected:
+    static const std::string TAG;
     virtual void start() = 0;
     virtual void stop() = 0;
     

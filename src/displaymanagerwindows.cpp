@@ -30,7 +30,7 @@ BOOL CALLBACK DisplayManagerWindows::MonitorEnumProc(HMONITOR hMonitor, HDC hdcM
 
         // auto horizontalScale = ((double)cxPhysical / (double)cxLogical);
         // auto verticalScale = ((double)cyPhysical / (double)cyLogical);
-        _this->_hostDisplays.push_back(Display(Rect(devMode.dmPosition.y, devMode.dmPosition.x, cxPhysical, cyPhysical)));
+        _this->addHostDisplay(Display(Rect(devMode.dmPosition.y, devMode.dmPosition.x, cxPhysical, cyPhysical)));
     }
     return TRUE;
 }

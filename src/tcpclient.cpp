@@ -1,5 +1,11 @@
 #include "tcpclient.h"
 
+#ifdef _WIN32
+#pragma comment (lib, "Ws2_32.lib")
+#pragma comment (lib, "Mswsock.lib")
+#pragma comment (lib, "AdvApi32.lib")
+#endif
+
 namespace med {
 
 const std::string TcpClient::TAG = "TcpClient";
@@ -27,7 +33,7 @@ TcpSocket TcpClient::connect(const std::string ipAddress, u_short port) {
             throw std::runtime_error("Invalid socket.");
         }
 
-        iRes = sock_connect(clientSocket, p->ai_addr, (int)p->ai_addrlen);
+        iRes = ::connect(clientSocket, p->ai_addr, (int)p->ai_addrlen);
         if(iRes == SOCKET_ERROR) {
             closesocket(clientSocket);
             clientSocket = INVALID_SOCKET;
@@ -49,7 +55,7 @@ TcpSocket TcpClient::connect(const std::string ipAddress, u_short port) {
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_addr.s_addr = inet_addr(ipAddress.c_str());
     serverAddr.sin_port = htons(port);
-    int connectResult = sock_connect(clientSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr));
+    int connectResult = ::connect(clientSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr));
     if (SOCKET_ERROR == connectResult) {
         throw std::runtime_error("Unable to connect to server");
     }

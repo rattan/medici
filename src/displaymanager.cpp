@@ -20,4 +20,9 @@ void DisplayManager::addHostDisplayChangeListener(std::function<void(std::list<D
 //    this->_displayChangeListener.remove(displayChangeListener);
 //}
 
+void DisplayManager::addHostDisplay(Display display) {
+    this->_hostDisplays.push_back(display);
 }
+
+}
+

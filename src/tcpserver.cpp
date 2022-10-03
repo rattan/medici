@@ -65,7 +65,7 @@ void TcpServer::listen(u_short port, const std::function<void(const TcpSocket)> 
     }
 #endif
 
-    int listenResult = sock_listen(listenSocket, SOMAXCONN);
+    int listenResult = ::listen(listenSocket, SOMAXCONN);
 	if (listenResult == SOCKET_ERROR) {
         throw std::runtime_error("Listen error.");
     }

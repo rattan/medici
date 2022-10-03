@@ -25,7 +25,8 @@ void Log::printLog(Log::Level lv, std::string tag, std::string message)  {
     std::stringstream logStream;
     auto now = std::chrono::system_clock::now();
     auto in_time_t = std::chrono::system_clock::to_time_t(now);
-    static pid_t pid = syscall(SYS_getpid);
+    // static pid_t pid = syscall(SYS_getpid);
+    static pid_t pid = 0;
     auto tid = std::hash<std::thread::id>{}(std::this_thread::get_id());
     char logLevelChar = 'V';
     switch(lv) {
@@ -41,7 +42,7 @@ void Log::printLog(Log::Level lv, std::string tag, std::string message)  {
         case Level::WARN:
             logLevelChar = 'W';
             break;
-        case Level::ERROR:
+        case Level::_ERROR:
             logLevelChar = 'E';
             break;
     }

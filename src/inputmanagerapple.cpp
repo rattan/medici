@@ -45,5 +45,9 @@ void InputManagerApple::start() {
 #endif
 }
 
+void InputManagerApple::stop() {
+    
+}
+
 
 }

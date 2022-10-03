@@ -34,7 +34,7 @@ int Application::exec() {
     
     auto &serverManager = DependencySet::getServerManager();
     auto &connectionManager = DependencySet::getConnectionManager();
-    connectionManager.connectToConfigConnection();
+    // connectionManager.connectToConfigConnection();
     serverManager.startMediciConnectionServer();
     serverManager.startBroadcastingServer();
     return 0;

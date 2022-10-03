@@ -5,7 +5,7 @@
 
 #include "tcpclient.h"
 #include "tcpsocket.h"
-#include "configmanager.h"
+// #include "configmanager.h"
 #include "uuid.h"
 
 namespace med {
@@ -19,7 +19,7 @@ public:
     void addBroadCastConnection(Uuid uuid, TcpSocket socket);
     void removeConnection(Uuid uuid);
     void removeBroadCastConnection(Uuid uuid);
-    void connectToConfigConnection();
+    // void connectToConfigConnection();
     
 };
 

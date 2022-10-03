@@ -2,6 +2,8 @@
 
 namespace med {
 
+const std::string InputManagerWindows::TAG = "InputManagerW";
+
 void InputManagerWindows::start() {
 #ifdef _WIN32
     WNDCLASSEX wc = { };
@@ -51,6 +53,10 @@ void InputManagerWindows::start() {
         }
     }
 #endif
+}
+
+void InputManagerWindows::stop() {
+
 }
 
 }

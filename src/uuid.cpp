@@ -62,6 +62,8 @@ Uuid Uuid::gen(version ver) {
         return genNil();
         case version::FOUR:
         return gen4();
+        default:
+        return genNil();
     }
 }
 
