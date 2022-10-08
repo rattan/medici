@@ -1,0 +1,14 @@
+10-03 21:15:39 0-15729502191765196471 [I] Medici Application: -----   start medici application.   -----
+10-03 21:15:39 0-15729502191765196471 [I] ServerManager: MediciConnection server listen start
+10-03 21:15:39 0-15729502191765196471 [I] ServerManager: Broadcast server listen start
+10-03 21:15:39 0-15729502191765196471 [I] ConfigManager: New config loaded. Host configuration: app_version=0
+protocol_version=0
+operating_system=WINDOWS
+name=Rattan-PC
+uuid=51506de4-ae9d-4084-bb0b-4753ed7bfec5
+ip_address=172.22.224.1
+display=0 0 3840 2160 primary
+display=0 -1920 1920 1080 primary
+
+10-03 21:15:39 0-15729502191765196471 [I] Medici Application: ----- terminate medici application. -----
+10-03 21:15:39 0-15729502191765196471 [I] LOG: Logger terminated.
