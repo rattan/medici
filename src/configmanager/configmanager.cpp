@@ -11,20 +11,19 @@ ConfigManager& ConfigManager::instance() {
     static ConfigManager i;
     if(!i.loaded) {
         i.load();
-        i.loaded = true;
     }
     return i;
 }
 
 std::string ConfigManager::toString() const{
-    std::stringstream stringBuilder;
-    stringBuilder<<"HOST:"<<std::endl;
-    stringBuilder<<_hostConfig.toString();
-    for(auto& connection: connections()) {
-        stringBuilder<<"CONNECTION:"<<std::endl;
-        stringBuilder<<connection.toString();
+    nlohmann::json connections = nlohmann::json::array();
+    for(const auto &connection: _connections) {
+        connections.push_back(connection.second.toJson());
     }
-    return stringBuilder.str();
+    return nlohmann::json({
+        {JSON_PROPERTY_HOST, _hostConfig.toJson()},
+        {JSON_PROPERTY_CONNECTIONS, connections}
+    }).dump(4);
 }
 
 const Config& ConfigManager::getDefaultConfig() const{
@@ -44,73 +43,26 @@ const Config ConfigManager::getDefaultHostConfig() const{
 
 void ConfigManager::load(const std::string from)
 {
-    std::ifstream fin;
-    fin.open(from);
-    std::list<std::string> configList;
-    std::string line;
-    while (true)
-    {
-        std::getline(fin, line);
-        if (fin)
-        {
-            configList.push_back(line);
+    std::ifstream fin(from);
+    try{
+        nlohmann::json configJson = nlohmann::json::parse(fin);
+        _hostConfig.setJson(configJson[JSON_PROPERTY_HOST]);
+        _connections.clear();
+        nlohmann::json connectionsJson = configJson[JSON_PROPERTY_CONNECTIONS];
+        for(const auto& connection: connectionsJson) {
+            Config config;
+            config.setJson(connection);
+            // _connections[config.uuid()] = config;
+            _connections.insert(std::pair<Uuid, Config>(config.uuid(), config));
         }
-        else
-        {
-            break;
-        }
-    }
-    fin.close();
-    if(configList.empty()) {
+    } catch(nlohmann::detail::parse_error e) {
+        Log::e(TAG, std::string(e.what()) + "make default configure.");
         _hostConfig = getDefaultHostConfig();
-    } else {
-        parse(configList);
+        _connections.clear();
     }
-    
     this->validateHostConfig();
+    loaded = true;
     Log::i(TAG, std::string("New config loaded. Host configuration: ").append(hostConfig().toString()));
-}
-
-void ConfigManager::parse(const std::list<std::string> &configLines)
-{
-    Config other;
-    Config *target = &_hostConfig;
-    
-    for (auto& line : configLines)
-    {
-        if(std::regex_match(line, std::regex(R"((HOST|CONNECTION):)"))) {
-            if(target == &other) {
-                this->_connections.insert(std::pair<Uuid, Config>(target->uuid(), *target));
-            }
-
-            switch (TextUtil::hash(line.c_str()))
-            {
-            case TextUtil::hash("HOST:"):
-                    target = &_hostConfig;
-                    *target = getDefaultHostConfig();
-                break;
-            case TextUtil::hash("CONNECTION:"):
-                target = &other;
-                    target->clear();
-                break;
-            }
-            continue;
-        }
-
-        std::regex re(R"((#)?(.*?)=(.*))");
-        std::smatch match;
-        if (std::regex_match(line, match, re))
-        {
-            if (match[1].matched)
-            {
-                continue;
-            }
-            assign(target, match[2].str(), match[3].str());
-        }
-    }
-    if (target == &other) {
-        this->_connections.insert(std::pair<Uuid, Config>(target->uuid(), *target));
-    }
 }
 
 void ConfigManager::validateHostConfig() {
@@ -136,48 +88,6 @@ void ConfigManager::validateHostConfig() {
             ++hostIt;
             ++currentIt;
         }
-    }
-}
-
-void ConfigManager::assign(Config* const target, const std::string &key, const std::string &value)
-{
-    switch (TextUtil::hash(key.c_str()))
-    {
-    case TextUtil::hash(KEY_APP_VERSION):
-        target->_appVersion = std::stoi(value);
-        break;
-    case TextUtil::hash(KEY_PROTOCOL_VERSION):
-        target->_protocolVersion = std::stoi(value);
-        break;
-    case TextUtil::hash(KEY_OPERATING_SYSTEM):
-        switch(TextUtil::hash(value.c_str())) {
-            case TextUtil::hash(OS_WINDOWS):
-                target->_operatingSystem = PlatformManager::OS::WINDOWS;
-                break;
-            case TextUtil::hash(OS_APPLE):
-                target->_operatingSystem = PlatformManager::OS::APPLE;
-                break;
-            case TextUtil::hash(OS_LINUX):
-                target->_operatingSystem = PlatformManager::OS::LINUX;
-                break;
-            default:
-                target->_operatingSystem = PlatformManager::OS::NIL;
-        }
-        break;
-    case TextUtil::hash(KEY_NAME):
-        target->_name = value;
-        break;
-    case TextUtil::hash(KEY_UUID):
-        target->_uuid = value;
-        break;
-    case TextUtil::hash(KEY_IP_ADDRESS):
-        target->_ipAddress = value;
-        break;
-    case TextUtil::hash(KEY_DISPLAY):
-        target->_displays.push_back(Display(value));
-        break;
-    default:
-            Log::e(TAG, std::string("[").append(key).append("] is not valid key. "));
     }
 }
 

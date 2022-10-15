@@ -2,26 +2,32 @@
 
 namespace med {
 
-Display::Display (const std::string &displayConfig) {
-    std::regex displayConfigRe(R"display((\d+) (\d+) (\d+) (\d+))display");
-    std::smatch match;
-    if(std::regex_search(displayConfig, match, displayConfigRe)) {
-        new(&displayRect) Rect(std::stoi(match[1].str()), std::stoi(match[2].str()), std::stoi(match[3].str()), std::stoi(match[4].str()));
-    }
-    if(displayConfig.find("primary") >0) {
-        this->_primary = true;
+Display::Display(const Rect& r): displayRect(r) {}
+
+const std::string Display::toString() const {
+    return toJson().dump();
+}
+
+void Display::setJson(nlohmann::json json) {
+    try {
+        int top = json[JSON_PROPERTY_TOP];
+        int left = json[JSON_PROPERTY_LEFT];
+        int width = json[JSON_PROPERTY_WIDTH];
+        int height = json[JSON_PROPERTY_HEIGHT];
+        displayRect = Rect(Point(top, left), width, height);
+    } catch(nlohmann::detail::type_error e) {
+        Log::e(tag(), std::string(e.what()) + json.dump(4));
+        displayRect = Rect();
     }
 }
 
-Display::Display(const Rect& r): displayRect(r) {}
-
-const std::string Display::toString() const{
-    std::stringstream result;
-    result<<displayRect.top()<<" "<<displayRect.left()<<" "<<displayRect.width()<<" "<<displayRect.height();
-    if(this->_primary) {
-        result<<" primary";
-    }
-    return result.str();
+const nlohmann::json Display::toJson() const{
+    return nlohmann::json({
+        {JSON_PROPERTY_TOP, displayRect.top()},
+        {JSON_PROPERTY_LEFT, displayRect.left()},
+        {JSON_PROPERTY_WIDTH, displayRect.width()},
+        {JSON_PROPERTY_HEIGHT, displayRect.height()}
+    });
 }
 
 const std::string Display::tag() const {

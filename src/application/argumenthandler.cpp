@@ -28,7 +28,7 @@ void ArgumentHandler::consumeConfig(std::list<std::string>::iterator &it) {
     ConfigManager &c = ConfigManager::instance();
     if(it != this->_argv.end()) {
         switch(TextUtil::hash(it->c_str())) {
-            case TextUtil::hash(KEY_NAME):
+            case TextUtil::hash(JSON_PROPERTY_NAME):
                 c.setHostName(*++it);
                 break;
             default:

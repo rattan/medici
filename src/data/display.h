@@ -4,20 +4,27 @@
 #include <sstream>
 #include <regex>
 
-#include "data.h"
+#include "jsondata.h"
 #include "rect.h"
+#include "../util/log.h"
+
+#define JSON_PROPERTY_TOP "top"
+#define JSON_PROPERTY_LEFT "left"
+#define JSON_PROPERTY_WIDTH "width"
+#define JSON_PROPERTY_HEIGHT "height"
 
 namespace med {
 
-class Display: public Data {
+class Display: public JsonData {
     Rect displayRect;
     bool _primary;
     bool _control;
     public:
-    Display (const std::string &displayConfig);
-    Display (const Rect &r);
+    Display (const Rect &r = Rect());
     
-    virtual const std::string toString() const;
+    const std::string toString() const;
+    virtual void setJson(nlohmann::json json);
+    virtual const nlohmann::json toJson() const;
     virtual const std::string tag() const;
 };
 

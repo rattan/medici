@@ -1,11 +1,10 @@
 #pragma once
 
-#include "data.h"
+#include "jsondata.h"
 #include "display.h"
 #include "uuid.h"
-#include "../util/textutil.h"
-#include "../tcp/tcpsocket.h"
 #include "../util/log.h"
+#include "../data/json.hpp"
 #include "../platformmanager/platformmanager.h"
 
 #include <fstream>
@@ -19,13 +18,13 @@
 
 
 // keys
-#define KEY_APP_VERSION "app_version"
-#define KEY_PROTOCOL_VERSION "protocol_version"
-#define KEY_OPERATING_SYSTEM "operating_system"
-#define KEY_NAME "name"
-#define KEY_UUID "uuid"
-#define KEY_IP_ADDRESS "ip_address"
-#define KEY_DISPLAY "display"
+#define JSON_PROPERTY_APP_VERSION "app_version"
+#define JSON_PROPERTY_PROTOCOL_VERSION "protocol_version"
+#define JSON_PROPERTY_OPERATING_SYSTEM "operating_system"
+#define JSON_PROPERTY_NAME "name"
+#define JSON_PROPERTY_UUID "uuid"
+#define JSON_PROPERTY_IP_ADDRESS "ip_address"
+#define JSON_PROPERTY_DISPLAYS "displays"
 
 // default values
 #define DEFAULT_APP_VERSION 0
@@ -33,7 +32,7 @@
 
 namespace med {
 
-class Config: public Data {
+class Config: public JsonData {
 private:
     friend class ConfigManager;
     int _appVersion = DEFAULT_APP_VERSION;
@@ -49,10 +48,9 @@ private:
            Uuid uuid = Uuid::gen(Uuid::version::FOUR), std::string ipAddress = "0.0.0.0",
            std::list<Display> displays = std::list<Display>());
     void clear();
-
+    virtual void setJson(nlohmann::json json);
 public:
-    
-    virtual const std::string toString() const;
+    virtual const nlohmann::json toJson() const;
     virtual const std::string tag() const;
     
     int appVersion() const;

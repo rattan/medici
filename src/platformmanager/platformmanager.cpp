@@ -20,8 +20,21 @@ PlatformManager::OS PlatformManager::getHostOperatingSystem() {
     return currentOS;
 }
 
-std::string PlatformManager::getHostOperatingSystemString(OS operatingSystem) {
+std::string PlatformManager::getOperatingSystemString(OS operatingSystem) {
     return std::string(_osString[static_cast<int>(operatingSystem)]);
+}
+
+PlatformManager::OS PlatformManager::parseOs(const std::string &osString) {
+    switch(TextUtil::hash(osString.c_str())) {
+        case TextUtil::hash(OS_APPLE):
+            return OS::APPLE;
+        case TextUtil::hash(OS_LINUX):
+            return OS::LINUX;
+        case TextUtil::hash(OS_WINDOWS):
+            return OS::WINDOWS;
+        default:
+            return OS::NIL;
+    }
 }
 
 }

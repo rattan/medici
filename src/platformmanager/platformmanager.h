@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "../util/textutil.h"
+
 #define OS_NIL "NIL"
 #define OS_APPLE "APPLE"
 #define OS_LINUX "LINUX"
@@ -18,7 +20,8 @@ private:
     static const char *_osString[];
 public:
     static OS getHostOperatingSystem();
-    static std::string getHostOperatingSystemString(OS operatingSystem = getHostOperatingSystem());
+    static std::string getOperatingSystemString(OS operatingSystem = getHostOperatingSystem());
+    static OS parseOs(const std::string &osString);
 };
 
 }

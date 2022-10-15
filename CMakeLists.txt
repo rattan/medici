@@ -48,6 +48,7 @@ list(
     ${SRC_DIRECTORY}data.cpp
     ${SRC_DIRECTORY}display.cpp
     ${SRC_DIRECTORY}event.cpp
+    ${SRC_DIRECTORY}jsondata.cpp
     ${SRC_DIRECTORY}keyboardevent.cpp
     ${SRC_DIRECTORY}mouseevent.cpp
     ${SRC_DIRECTORY}packet.cpp

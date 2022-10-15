@@ -7,16 +7,20 @@
 #include <regex>
 #include <algorithm>
 
+#include "../data/json.hpp"
 #include "../data/config.h"
 #include "../data/uuid.h"
 #include "../util/log.h"
 #include "../dependencyset/dependencyset.h"
 #include "../platformmanager/platformmanager.h"
 
-#define DEFAULT_CONFIG_FILE "m.config"
+#define DEFAULT_CONFIG_FILE "config.json"
+
+#define JSON_PROPERTY_HOST "host"
+#define JSON_PROPERTY_CONNECTIONS "connections"
+
 
 namespace med {
-
 
 class ConfigManager {
 private:
@@ -31,8 +35,6 @@ private:
     ConfigManager(ConfigManager&& o) = delete;
     
     void load(const std::string from = DEFAULT_CONFIG_FILE);
-    void assign(Config* const target, const std::string &key, const std::string &value);
-    void parse(const std::list<std::string> &configLines);
     void validateHostConfig();
     
     
