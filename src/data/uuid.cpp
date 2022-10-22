@@ -67,6 +67,10 @@ Uuid Uuid::gen(version ver) {
     }
 }
 
+Uuid Uuid::nil() {
+    return genNil();
+}
+
 Uuid::Uuid(const std::string& uuid): _strData(uuid) {
     if(!std::regex_match(uuid, std::regex(UUID_RE))) {
         Uuid validUuid = Uuid::gen(version::FOUR);

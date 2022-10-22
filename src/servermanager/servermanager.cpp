@@ -7,6 +7,7 @@ const std::string ServerManager::TAG = "ServerManager";
 void ServerManager::startMediciConnectionServer() {
     if(!mediciConnectionServer.isListening()) {
         mediciConnectionServer.listen(CONNECTION_PORT, [&](TcpSocket socket) {
+            DependencySet::getConnectionManager().addConnection(socket);
 //            this->mediciConnectionServer.push_back
             
         });

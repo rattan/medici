@@ -5,13 +5,12 @@ namespace med {
 
 const std::string ConfigManager::TAG = "ConfigManager";
 
-ConfigManager::ConfigManager(){}
+ConfigManager::ConfigManager(){
+    load();
+}
 
 ConfigManager& ConfigManager::instance() {
     static ConfigManager i;
-    if(!i.loaded) {
-        i.load();
-    }
     return i;
 }
 
@@ -61,8 +60,7 @@ void ConfigManager::load(const std::string from)
         _connections.clear();
     }
     this->validateHostConfig();
-    loaded = true;
-    Log::i(TAG, std::string("New config loaded. Host configuration: ").append(hostConfig().toString()));
+    Log::i(TAG, std::string("Config loaded. Host configuration: ").append(hostConfig().toString()));
 }
 
 void ConfigManager::validateHostConfig() {
@@ -94,9 +92,8 @@ void ConfigManager::validateHostConfig() {
 void ConfigManager::save(const std::string to) const
 {
     std::ofstream fout;
-    std::string result = toString();
     fout.open(to);
-    fout<<result;
+    fout<<toString();
     fout.close();
 }
 

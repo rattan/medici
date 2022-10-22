@@ -23,6 +23,7 @@ class Uuid: public Data{
     std::string _strData;
 
     public:
+    static Uuid nil();
     enum class version {
         NIL, ONE, TWO, THREE, FOUR, FIVE
     };

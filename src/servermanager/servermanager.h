@@ -2,6 +2,8 @@
 
 #include "../tcp/tcpserver.h"
 #include "../util/log.h"
+#include "../dependencyset/dependencyset.h"
+#include "../connectionmanager/connectionmanager.h"
 
 #include <string>
 #include <list>
