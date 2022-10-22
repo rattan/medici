@@ -65,7 +65,7 @@ TcpSocket::TcpSocket(TcpSocket&& socket)
     socket.runner = nullptr;
 }
 
-void TcpSocket::setOnReceiveListener(const std::function<void(char*, int)> &listener) {
+void TcpSocket::setOnReceiveListener(const std::function<void(char*, int)> listener) {
     if(_socket == INVALID_SOCKET) {
         throw std::runtime_error("Can't receive. TcpSocket not avaliable.");
     }

@@ -1,5 +1,7 @@
 #include "uuid.h"
 
+namespace med{
+
 const std::string Uuid::toString() const{
     return this->_strData;
 }
@@ -108,4 +110,6 @@ bool Uuid::operator>(const Uuid& other) const {
 
 bool Uuid::operator>=(const Uuid& other) const {
     return !(*this < other);
+}
+
 }

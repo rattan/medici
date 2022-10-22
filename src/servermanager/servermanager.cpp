@@ -4,13 +4,9 @@ namespace med {
 
 const std::string ServerManager::TAG = "ServerManager";
 
-void ServerManager::startMediciConnectionServer() {
+void ServerManager::startMediciConnectionServer(const std::function<void(TcpSocket)> onListenSocket) {
     if(!mediciConnectionServer.isListening()) {
-        mediciConnectionServer.listen(CONNECTION_PORT, [&](TcpSocket socket) {
-            DependencySet::getConnectionManager().addConnection(socket);
-//            this->mediciConnectionServer.push_back
-            
-        });
+        mediciConnectionServer.listen(CONNECTION_PORT, onListenSocket);
         Log::i(TAG, "MediciConnection server listen start");
     } else {
         Log::w(TAG, "MediciConnection server already listening");
@@ -23,10 +19,9 @@ void ServerManager::stopMediciConnectionServer() {
     }
 }
 
-void ServerManager::startBroadcastingServer() {
+void ServerManager::startBroadcastingServer(const std::function<void(TcpSocket)> onListenSocket) {
     if(!broadcastServer.isListening()) {
-        broadcastServer.listen(BROADCAST_PORT, [&](TcpSocket socket){
-        });
+        broadcastServer.listen(BROADCAST_PORT, onListenSocket);
         Log::i(TAG, "Broadcast server listen start");
     } else {
         Log::w(TAG, "Broadcast server already listening");

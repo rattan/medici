@@ -2,11 +2,10 @@
 
 #include "../tcp/tcpserver.h"
 #include "../util/log.h"
-#include "../dependencyset/dependencyset.h"
-#include "../connectionmanager/connectionmanager.h"
 
 #include <string>
 #include <list>
+#include <functional>
 
 namespace med {
 
@@ -17,9 +16,9 @@ private:
     TcpServer mediciConnectionServer;
     
 public:
-    void startMediciConnectionServer();
+    void startMediciConnectionServer(const std::function<void(TcpSocket)> onListenSocket);
     void stopMediciConnectionServer();
-    void startBroadcastingServer();
+    void startBroadcastingServer(const std::function<void(TcpSocket)> onListenSocket);
     void stopBroadCastingServer();
 };
 

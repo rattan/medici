@@ -34,9 +34,13 @@ int Application::exec() {
     
     auto &serverManager = DependencySet::getServerManager();
     auto &connectionManager = DependencySet::getConnectionManager();
-    // connectionManager.connectToConfigConnection();
-    serverManager.startMediciConnectionServer();
-    serverManager.startBroadcastingServer();
+    serverManager.startMediciConnectionServer([&](TcpSocket socket) {
+        connectionManager.addConnection(std::move(socket));
+    });
+    serverManager.startBroadcastingServer([&](TcpSocket socket) {
+        connectionManager.addBroadCastConnection(std::move(socket));
+    });
+
     return 0;
 }
 }

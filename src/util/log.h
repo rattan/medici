@@ -22,7 +22,6 @@ namespace med {
 
 class Log {
 private:
-    static const std::string TAG;
     static Log& instance();
     Log();
     ~Log();

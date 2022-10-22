@@ -10,6 +10,8 @@
 #define UUID_RE R"uuid([\da-f]{8}-([\da-f]{4}-){3}[\da-f]{12})uuid"
 #define UUID_NIL R"(00000000-0000-0000-0000-000000000000)"
 
+namespace med {
+
 class Uuid: public Data{
     private:
     static Uuid genNil();
@@ -23,7 +25,6 @@ class Uuid: public Data{
     std::string _strData;
 
     public:
-    static Uuid nil();
     enum class version {
         NIL, ONE, TWO, THREE, FOUR, FIVE
     };
@@ -31,6 +32,7 @@ class Uuid: public Data{
     virtual const std::string toString() const;
     virtual const std::string tag() const;
 
+    static Uuid nil();
     static Uuid gen(version ver = version::FOUR);
     Uuid(const std::string &uuid = "");
     bool operator==(const Uuid& other) const;
@@ -40,3 +42,5 @@ class Uuid: public Data{
     bool operator>(const Uuid& other) const;
     bool operator>=(const Uuid& other) const;
 };
+
+}

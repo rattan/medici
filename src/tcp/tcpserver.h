@@ -11,7 +11,7 @@ private:
     std::thread *listenThread = nullptr;
 public:
     ~TcpServer();
-    void listen(u_short port, const std::function<void(TcpSocket)> &listener);
+    void listen(u_short port, const std::function<void(TcpSocket)> listener);
     bool isListening();
     void close();
 };

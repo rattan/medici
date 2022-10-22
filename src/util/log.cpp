@@ -2,21 +2,20 @@
 
 namespace med {
 
-const std::string Log::TAG = "LOG";
-
 Log& Log::instance() {
     static Log i;
     return i;
 }
 
 Log::Log() {
+    printBuffer.push("logger start >>>");
     this->consumeBuffer = true;
     this->consumeThread = std::thread(logBufferConsumer);
     
 }
 
 Log::~Log() {
-    i(TAG, "Logger terminated.");
+    printBuffer.push("<<< logger terminated");
     this->consumeBuffer = false;
     this->consumeThread.join();
 }
@@ -25,7 +24,6 @@ void Log::printLog(Log::Level lv, std::string tag, std::string message)  {
     std::stringstream logStream;
     auto now = std::chrono::system_clock::now();
     auto in_time_t = std::chrono::system_clock::to_time_t(now);
-    // static pid_t pid = syscall(SYS_getpid);
     static pid_t pid = 0;
     auto tid = std::hash<std::thread::id>{}(std::this_thread::get_id());
     char logLevelChar = 'V';
@@ -46,7 +44,7 @@ void Log::printLog(Log::Level lv, std::string tag, std::string message)  {
             logLevelChar = 'E';
             break;
     }
-    logStream<<std::put_time(std::localtime(&in_time_t), "%m-%d %X")<<' '<<pid<<'-'<<tid<<" ["<<logLevelChar<<"] "<<tag<<": "<<message;
+    logStream<<std::put_time(std::localtime(&in_time_t), "%m-%d %X")<<' '<<std::hex<<tid<<" ["<<logLevelChar<<"] "<<tag<<": "<<message;
     std::string logString = logStream.str();
     
     if(consumeBuffer) {

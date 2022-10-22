@@ -37,7 +37,7 @@ list(
 
 set(SRC_DIRECTORY src/connectionmanager/)
 list(
-    APPEND SCR_FILES
+    APPEND SRC_FILES
     ${SRC_DIRECTORY}connectionmanager.cpp
 )
 

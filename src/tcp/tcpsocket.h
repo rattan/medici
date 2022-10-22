@@ -78,7 +78,7 @@ private:
     } *runner = nullptr;
 public:
     TcpSocket(TcpSocket&& socket);
-    void setOnReceiveListener(const std::function<void(char*, int)> &listener);
+    void setOnReceiveListener(const std::function<void(char*, int)> listener);
     void send(const char* buffer, int size) const;
     void close();
     

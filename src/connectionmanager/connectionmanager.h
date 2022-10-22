@@ -5,7 +5,6 @@
 
 #include "../tcp/tcpclient.h"
 #include "../tcp/tcpsocket.h"
-// #include "../configmanager.h"
 #include "../data/uuid.h"
 #include "../data/packet.h"
 
@@ -18,11 +17,10 @@ class ConnectionManager {
 
     // Packet& streamToPacket(const char* streamBuffer, int* consumeByte);
 public:
-    void addConnection(TcpSocket socket, Uuid uuid = Uuid::nil());
-    void addBroadCastConnection(TcpSocket socket, Uuid uuid = Uuid::nil());
+    void addConnection(TcpSocket socket);
+    void addBroadCastConnection(TcpSocket socket);
     void removeConnection(Uuid uuid);
     void removeBroadCastConnection(Uuid uuid);
-    // void connectToConfigConnection();
     
     void send(Uuid uuid, Packet &packet);
     void broadcast(Packet &packet);

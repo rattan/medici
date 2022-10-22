@@ -3,13 +3,10 @@
 namespace med {
 
 TcpServer::~TcpServer() {
-    //if (this->listenThread) {
-    //    this->listenThread->join();
-    //    delete this->listenThread;
-    //}
+    close();
 }
 
-void TcpServer::listen(u_short port, const std::function<void(const TcpSocket)> &listener) {
+void TcpServer::listen(u_short port, const std::function<void(TcpSocket)> listener) {
     if (this->listenSocket != INVALID_SOCKET) {
         throw std::runtime_error("TcpServer already listening.");
     }
@@ -72,13 +69,15 @@ void TcpServer::listen(u_short port, const std::function<void(const TcpSocket)> 
 
     this->acceptListener = listener;
 
-    listenThread = new std::thread([&](){
-        while(this->listenSocket) {
-            SOCKET clientSocket = accept(this->listenSocket, nullptr, nullptr);
-            this->acceptListener(TcpSocket(clientSocket));
+    this->listenThread = new std::thread([](TcpServer *_this) {
+        while(_this->listenSocket != INVALID_SOCKET) {
+            SOCKET clientSocket = accept(_this->listenSocket, nullptr, nullptr);
+            if(clientSocket != INVALID_SOCKET) {
+                _this->acceptListener(TcpSocket(clientSocket));
+            }
         }
-        std::cout << "listen end [" << port << "]" << std::endl;
-    });
+        std::cout<<"listen end"<<std::endl;
+    }, this);
 }
 
 bool TcpServer::isListening() {
@@ -94,6 +93,11 @@ void TcpServer::close() {
         #if defined __linux__ || __APPLE__
         shutdown(this->listenSocket, SHUT_RDWR);
         #endif
+        this->listenSocket = INVALID_SOCKET;
+        if(this->listenThread != nullptr) {
+            this->listenThread->join();
+            this->listenThread = nullptr;
+        }
     } else {
         throw std::runtime_error("Listen socket already closed.");
     }

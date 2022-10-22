@@ -12,7 +12,7 @@ PlatformManager::OS PlatformManager::getHostOperatingSystem() {
     currentOS = OS::WINDOWS;
 #endif
 #ifdef __linux__
-    curentOS =  OS::LINUX;
+    currentOS =  OS::LINUX;
 #endif
 #ifdef __APPLE__
     currentOS = OS::APPLE;
