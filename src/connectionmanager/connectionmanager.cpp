@@ -59,8 +59,7 @@ void ConnectionManager::send(Uuid uuid, Packet &packet) {
         } else {
             bodySize = (unsigned short)body.size();
         }
-        short index = packet.packetIndex();
-        
+        short index = static_cast<short>(packet.packetIndex());
 
         int bufferSize = bodySize + 4;
         char *buffer = new char[bufferSize];
@@ -88,7 +87,7 @@ void ConnectionManager::broadcast(Packet &packet) {
     }
     int bufferSize = bodySize + 4;
     char *buffer = new char[bufferSize];
-    short index = packet.packetIndex();
+    short index = static_cast<short>(packet.packetIndex());
     std::copy_n(reinterpret_cast<char*>(&index),2, buffer);
     std::copy_n(reinterpret_cast<char*>(&bodySize),2, buffer+2);
     std::transform(std::begin(body), std::end(body), buffer + 4, [](std::byte b) {

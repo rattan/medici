@@ -52,6 +52,7 @@ private:
 public:
     virtual const nlohmann::json toJson() const;
     virtual const std::string tag() const;
+    virtual Index packetIndex() const;
     
     int appVersion() const;
     int protocolVersion() const;

@@ -34,4 +34,8 @@ const std::string Display::tag() const {
     return "Display";
 }
 
+Packet::Index Display::packetIndex() const {
+    return Index::DISPLAY;
+}
+
 }

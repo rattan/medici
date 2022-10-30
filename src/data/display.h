@@ -26,6 +26,8 @@ class Display: public JsonData {
     virtual void setJson(nlohmann::json json);
     virtual const nlohmann::json toJson() const;
     virtual const std::string tag() const;
+
+    Index packetIndex() const;
 };
 
 }

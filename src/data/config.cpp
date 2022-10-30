@@ -51,6 +51,10 @@ const std::string Config::tag() const{
     return "Config";
 }
 
+Packet::Index Config::packetIndex() const {
+    return Index::CONFIG;
+}
+
 int Config::appVersion() const {
     return this->_appVersion;
 }
