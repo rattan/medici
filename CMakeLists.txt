@@ -4,14 +4,13 @@ project(medici VERSION 0.1.0)
 include(CTest)
 enable_testing()
 
-ADD_COMPILE_OPTIONS(--std=c++20)
-
+SET(CMAKE_CXX_STANDARD 20)
 
 if(WIN32)
 message("win")
 elseif(APPLE)
 message("apple")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework AppKit")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework ApplicationServices")
 elseif(UNIX)
 if(${CMAKE_SYSTEM} MATCHES Linux)
 message("linux")

@@ -15,14 +15,9 @@ class InputManager {
 
     std::vector<std::function<void(KeyboardEvent)>> _keyEventListener;
     std::vector<std::function<void(MouseEvent)>> _mouseEventListener;
-    
-    void startInternal();
-    void stopInternal();
 
 protected:
     static const std::string TAG;
-    virtual void start() = 0;
-    virtual void stop() = 0;
     
 public:
     InputManager();
@@ -33,6 +28,10 @@ public:
     virtual void addMouseEvnetListener(std::function<void(MouseEvent)> mouseEvnetListener) final;
     virtual void removeKeyEvnetListener(std::function<void(KeyboardEvent)> keyboardEvnetListener) final;
     virtual void removeMouseEvnetListener(std::function<void(MouseEvent)> mouseEvnetListener) final;
+
+    virtual void start() = 0;
+    virtual void stop() = 0;
+
 };
 
 }

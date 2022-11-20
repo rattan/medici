@@ -5,20 +5,11 @@ namespace med {
 const std::string InputManager::TAG = "InputManager";
 
 InputManager::InputManager() {
-    startInternal();
 }
 
 InputManager::~InputManager() {
-    stopInternal();
 }
 
-void InputManager::startInternal() {
-    start();
-}
-
-void InputManager::stopInternal() {
-    stop();
-}
 
 void InputManager::sendKeyEvent(KeyboardEvent keyEvent) {
     for (const auto& keyListener: this->_keyEventListener) {

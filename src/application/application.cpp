@@ -41,6 +41,15 @@ int Application::exec() {
         connectionManager.addBroadCastConnection(std::move(socket));
     });
 
+    auto &inputManager = DependencySet::getInputManager();
+    inputManager.addKeyEvnetListener([&](KeyboardEvent kEvent) {
+        connectionManager.broadcast(kEvent);
+    });
+    inputManager.addMouseEvnetListener([&](MouseEvent mEvent) {
+        connectionManager.broadcast(mEvent);
+    });
+    inputManager.start();
+
     return 0;
 }
 }

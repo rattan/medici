@@ -5,6 +5,7 @@
 
 #include "../dependencyset/dependencyset.h"
 #include "../servermanager/servermanager.h"
+#include "../inputmanager/inputmanager.h"
 #include "../connectionmanager/connectionmanager.h"
 #include "../configmanager/configmanager.h"
 #include "../util/log.h"
