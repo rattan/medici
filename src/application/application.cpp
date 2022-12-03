@@ -48,6 +48,8 @@ int Application::exec() {
     inputManager.addMouseEvnetListener([&](MouseEvent mEvent) {
         connectionManager.broadcast(mEvent);
     });
+
+    // run keyboard, mouse input loop and block before application end.
     inputManager.start();
 
     return 0;

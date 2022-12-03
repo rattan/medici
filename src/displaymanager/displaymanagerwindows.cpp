@@ -4,7 +4,6 @@ namespace med {
 
 
 DisplayManagerWindows::DisplayManagerWindows() {
-    this->_hostDisplays.clear();
 #ifdef _WIN32
     EnumDisplayMonitors(NULL, NULL, MonitorEnumProc, reinterpret_cast<LPARAM>(this));
 #endif

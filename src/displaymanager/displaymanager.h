@@ -17,17 +17,17 @@ protected:
     friend class DependencySet;
     static const std::string TAG;
     
-    std::list<Display> _hostDisplays;
-    std::list<std::function<void(std::list<Display>)>> _displayChangeListener;
+    Display _hostDisplays;
+    std::list<std::function<void(Display)>> _displayChangeListener;
     DisplayManager();
     
 
 public:
 
-    const std::list<Display> getHostDisplays();
-    void addHostDisplayChangeListener(std::function<void(std::list<Display>)> &displayChangeListener);
+    const Display getHostDisplays();
+    void addHostDisplayChangeListener(std::function<void(Display)> &displayChangeListener);
 //    void removeHostDisplyaChangeListener(std::function<void(std::list<Display>)> &displayChangeListener);
-    void addHostDisplay(Display display);
+    void setHostDisplay(Display display);
 };
 
 }

@@ -41,12 +41,12 @@ private:
     Uuid _uuid;
     std::string _name;
     std::string _ipAddress;
-    std::list<Display> _displays;
+    Display _display;
 
     Config(int appVersion = DEFAULT_APP_VERSION, int protocolVersion = DEFAULT_PROTOCOL_VERSION,
            PlatformManager::OS operatingSystem = PlatformManager::OS::NIL, std::string name = "",
            Uuid uuid = Uuid::gen(Uuid::version::FOUR), std::string ipAddress = "0.0.0.0",
-           std::list<Display> displays = std::list<Display>());
+           Display display = Display());
     void clear();
     virtual void setJson(nlohmann::json json);
 public:
@@ -60,7 +60,7 @@ public:
     std::string name() const;
     Uuid uuid() const;
     std::string ipAddress() const;
-    const std::list<Display>& displays() const;
+    const Display& display() const;
 };
 
 }

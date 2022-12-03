@@ -3,9 +3,9 @@
 namespace med {
 
 Config::Config(int appVersion, int protocolVersion, PlatformManager::OS operatingSystem, std::string name,
-                   Uuid uuid, std::string ipAddress, std::list<Display> displays):
+                   Uuid uuid, std::string ipAddress, Display display):
     _appVersion(appVersion), _protocolVersion(protocolVersion), _operatingSystem(operatingSystem), _name(name),
-    _uuid(uuid), _ipAddress(ipAddress), _displays(displays) {}
+    _uuid(uuid), _ipAddress(ipAddress), _display(display) {}
 
 void Config::clear() {
     new (this)Config();
@@ -19,12 +19,8 @@ void Config::setJson(nlohmann::json json) {
     _uuid = Uuid(json[JSON_PROPERTY_UUID]);
     _name = json[JSON_PROPERTY_NAME];
     _ipAddress = json[JSON_PROPERTY_IP_ADDRESS];
-    _displays.clear();
-    for(const auto& displayJson: json[JSON_PROPERTY_DISPLAYS]) {
-        Display display;
-        display.setJson(displayJson);
-        _displays.push_back(display);
-    }
+    _display = Display();
+    _display.setJson(json[JSON_PROPERTY_DISPLAYS]);
     } catch(nlohmann::detail::type_error e) {
         Log::e(tag(), std::string(e.what()) + json.dump(4));
         clear();
@@ -32,10 +28,6 @@ void Config::setJson(nlohmann::json json) {
 }
 
 const nlohmann::json Config::toJson() const {
-    nlohmann::json jsonDisplays = nlohmann::json::array();
-    for(const auto& display: displays()) {
-        jsonDisplays.push_back(display.toJson());
-    }
     return nlohmann::json({
         {JSON_PROPERTY_APP_VERSION, appVersion()},
         {JSON_PROPERTY_PROTOCOL_VERSION, protocolVersion()},
@@ -43,7 +35,7 @@ const nlohmann::json Config::toJson() const {
         {JSON_PROPERTY_NAME, name()},
         {JSON_PROPERTY_UUID, uuid().toString()},
         {JSON_PROPERTY_IP_ADDRESS, ipAddress()},
-        {JSON_PROPERTY_DISPLAYS, jsonDisplays}
+        {JSON_PROPERTY_DISPLAYS, display().toJson()}
     });
 }
 
@@ -73,8 +65,8 @@ Uuid Config::uuid() const {
 std::string Config::ipAddress() const {
     return this->_ipAddress;
 }
-const std::list<Display>& Config::displays() const {
-    return this->_displays;
+const Display& Config::display() const {
+    return this->_display;
 }
 
 }

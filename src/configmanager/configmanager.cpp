@@ -72,21 +72,7 @@ void ConfigManager::validateHostConfig() {
     if (this->_hostConfig.ipAddress() != current.ipAddress()) {
         this->_hostConfig._ipAddress = current.ipAddress();
     }
-    const std::list<Display> &currentDisplays = current.displays();
-    if (this->_hostConfig.displays().size() != currentDisplays.size()) {
-        this->_hostConfig._displays = currentDisplays;
-    } else {
-        auto hostIt = this->_hostConfig.displays().begin();
-        auto currentIt = current.displays().begin();
-        while(hostIt != this->hostConfig().displays().end() && currentIt != current.displays().end()) {
-            if(hostIt->toString() != currentIt->toString()) {
-                this->_hostConfig._displays = currentDisplays;
-                break;
-            }
-            ++hostIt;
-            ++currentIt;
-        }
-    }
+    this->_hostConfig._display = current.display();
 }
 
 void ConfigManager::save(const std::string to) const

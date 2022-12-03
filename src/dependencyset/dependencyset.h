@@ -12,6 +12,7 @@
 #include "../inputmanager/inputmanagerwindows.h"
 #include "../connectionmanager/connectionmanager.h"
 #include "../servermanager/servermanager.h"
+#include "../statemanager/statemanager.h"
 #include "../util/log.h"
 
 namespace med {
@@ -25,6 +26,7 @@ public:
     static InputManager& getInputManager();
     static ConnectionManager& getConnectionManager();
     static ServerManager& getServerManager();
+    static StateManager& getStateManger();
 };
 
 }

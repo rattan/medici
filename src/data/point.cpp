@@ -2,6 +2,8 @@
 
 namespace med{
 
+Point::Point(): _y(0), _x(0) {}
+
 Point::Point(int y, int x): _y(y), _x(x) {}
 int Point::x() const {
     return _x;

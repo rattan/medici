@@ -8,11 +8,11 @@ const std::string DisplayManager::TAG = "DisplayManager";
 DisplayManager::DisplayManager() {
 }
 
-const std::list<Display> DisplayManager::getHostDisplays() {
+const Display DisplayManager::getHostDisplays() {
     return this->_hostDisplays;
 }
 
-void DisplayManager::addHostDisplayChangeListener(std::function<void(std::list<Display>)> &displayChangeListener) {
+void DisplayManager::addHostDisplayChangeListener(std::function<void(Display)> &displayChangeListener) {
     this->_displayChangeListener.push_back(displayChangeListener);
 }
 
@@ -20,8 +20,8 @@ void DisplayManager::addHostDisplayChangeListener(std::function<void(std::list<D
 //    this->_displayChangeListener.remove(displayChangeListener);
 //}
 
-void DisplayManager::addHostDisplay(Display display) {
-    this->_hostDisplays.push_back(display);
+void DisplayManager::setHostDisplay(Display display) {
+    this->_hostDisplays = display;
 }
 
 }

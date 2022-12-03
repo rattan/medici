@@ -6,6 +6,7 @@ namespace med {
 class Point {
     int _x, _y;
 public:
+    Point();
     Point(int y, int x);
     int x() const;
     int y() const;

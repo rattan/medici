@@ -1,11 +1,11 @@
 #pragma once
 
 #include <string>
-#include <sstream>
-#include <regex>
+#include <list>
 
 #include "jsondata.h"
 #include "rect.h"
+#include "point.h"
 #include "../util/log.h"
 
 #define JSON_PROPERTY_TOP "top"
@@ -16,11 +16,15 @@
 namespace med {
 
 class Display: public JsonData {
-    Rect displayRect;
+    std::list<Rect> displayRect;
     bool _primary;
     bool _control;
     public:
     Display (const Rect &r = Rect());
+    Display (const std::list<Rect> &rectList);
+
+    bool isPositionInside(const Point &position) const;
+    int count();
     
     const std::string toString() const;
     virtual void setJson(nlohmann::json json);
