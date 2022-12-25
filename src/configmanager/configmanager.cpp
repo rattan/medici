@@ -95,4 +95,8 @@ std::list<Config> ConfigManager::connections() const {
     return result;
 }
 
+const Config ConfigManager::connection(Uuid uuid) const {
+    return this->_connections.at(uuid);
+}
+
 }

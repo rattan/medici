@@ -12,7 +12,9 @@ public:
     int y() const;
     
     void moveTo(int y, int x);
+    void moveTo(Point other);
     unsigned int distance(const Point& other) const;
+    Point operator+(Point others);
 };
 
 }

@@ -8,6 +8,7 @@
 #include "../inputmanager/inputmanager.h"
 #include "../connectionmanager/connectionmanager.h"
 #include "../configmanager/configmanager.h"
+#include "../statemanager/statemanager.h"
 #include "../util/log.h"
 
 // This is Application class for Medici process.

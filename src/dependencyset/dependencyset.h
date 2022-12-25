@@ -26,7 +26,7 @@ public:
     static InputManager& getInputManager();
     static ConnectionManager& getConnectionManager();
     static ServerManager& getServerManager();
-    static StateManager& getStateManger();
+    static StateManager& getStateManager();
 };
 
 }

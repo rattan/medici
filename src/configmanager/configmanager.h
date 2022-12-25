@@ -51,6 +51,7 @@ public:
     void setHostName(const std::string& name);
     const Config& hostConfig() const;
     std::list<Config> connections() const;
+    const Config connection(Uuid uuid) const;
     
 };
 

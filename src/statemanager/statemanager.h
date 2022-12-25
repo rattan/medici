@@ -2,29 +2,27 @@
 
 #include <list>
 
+#include "../data/uuid.h"
+#include "../data/config.h"
 #include "../data/point.h"
 #include "../data/display.h"
 
 namespace med {
 
 class StateManager {
-    bool _focused;
+    friend class DependencySet;
+    Uuid _focused = Uuid::nil();
+    Config *_focusedConfig = nullptr;
     Point _globalPosition;
-    Point _localPosition;
-    std::list<Display> _displayList;
-    Display *_myDisplay;
+    std::list<Config> _connections;
 
-    void grabFocus();
-    void releaseFocus();
+    void grabFocus(Uuid uuid);
+    StateManager();
 public:
-    // StateManager();
-    bool isFocused();
-
+    Uuid getFocused();
     void setGlobalPosition(Point position);
- 
-
-
-
+    void moveGlobalPosition(Point delta);
+    void setConnections(std::list<Config> connections);
 };
 
 }

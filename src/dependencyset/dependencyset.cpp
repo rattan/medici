@@ -56,7 +56,7 @@ ServerManager& DependencySet::getServerManager() {
     return *serverManager;
 }
 
-StateManager& DependencySet::getStateManger() {
+StateManager& DependencySet::getStateManager() {
     static StateManager* stateManager = new StateManager();
     return *stateManager;
 }

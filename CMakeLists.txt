@@ -92,6 +92,12 @@ list(
     ${SRC_DIRECTORY}servermanager.cpp
 )
 
+set(SRC_DIRECTORY src/statemanager/)
+list(
+    APPEND SRC_FILES
+    ${SRC_DIRECTORY}statemanager.cpp
+)
+
 set(SRC_DIRECTORY src/tcp/)
 list(
     APPEND SRC_FILES

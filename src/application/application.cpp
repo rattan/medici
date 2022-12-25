@@ -31,7 +31,7 @@ int Application::exec() {
     }
     executing = true;
     Log::i(TAG, "-----   start medici application.   -----");
-    
+    auto &configManager = ConfigManager::instance();
     auto &serverManager = DependencySet::getServerManager();
     auto &connectionManager = DependencySet::getConnectionManager();
     serverManager.startMediciConnectionServer([&](TcpSocket socket) {
@@ -42,11 +42,24 @@ int Application::exec() {
     });
 
     auto &inputManager = DependencySet::getInputManager();
+    auto &stateManager = DependencySet::getStateManager();
+    stateManager.setConnections(configManager.connections());
     inputManager.addKeyEvnetListener([&](KeyboardEvent kEvent) {
-        connectionManager.broadcast(kEvent);
+        Uuid target = stateManager.getFocused();
+        if (ConfigManager::instance().hostConfig().uuid() == target) {
+            // flush event to host
+        } else {
+            connectionManager.send(target, kEvent);
+        }
     });
     inputManager.addMouseEvnetListener([&](MouseEvent mEvent) {
-        connectionManager.broadcast(mEvent);
+        stateManager.moveGlobalPosition(mEvent.moveXY());
+        Uuid target = stateManager.getFocused();
+        if (ConfigManager::instance().hostConfig().uuid() == target) {
+            // flush event to host
+        } else {
+            connectionManager.send(target, mEvent);
+        }
     });
 
     // run keyboard, mouse input loop and block before application end.
